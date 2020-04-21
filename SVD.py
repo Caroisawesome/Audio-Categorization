@@ -1,25 +1,23 @@
 import scipy.io.wavfile
-from scipy import signal
-import matplotlib.pyplot as plt
-
-
-
-def wav_to_spect(filename):
-
-    samplerate, data = scipy.io.wavfile.read(filename)
-    num_channels = data.shape[1]
-
-    freq, times, spectrogram = signal.spectrogram(data[:,0], samplerate)
-
-    plt.pcolormesh(times, freq, spectrogram)
-    plt.ylabel('Frequency [Hz]')
-    plt.xlabel('Time [sec]')
-    plt.show()
+import math
+import numpy as np
 
 
 if (__name__ == '__main__'):
+    samplerate, data = scipy.io.wavfile.read('test.wav')
+    (song_length,num_channels) = data.shape
 
-    wav_to_spect('test.wav')
+    num_columns = 1024
+    num_rows = math.floor(song_length/num_columns)
+    num_entries = num_rows*num_columns
+
+
+    A = np.array( data)
+    A = A[:num_entries,0]
+    A = np.reshape(A, (num_rows, num_columns))
+    u, s, vh = np.linalg.svd(A, full_matrices=True)
+
+    print(s)
 
 
     # doto: save all wave files as a spectrogram?
