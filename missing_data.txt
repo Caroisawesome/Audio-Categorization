@@ -1,0 +1,21 @@
+Genre: Rock
+missing data dimensions at file # 01016257
+missing data dimensions at file # 01016258
+Genre: Pop
+Genre: Folk
+missing data dimensions at file # 01017725
+missing data dimensions at file # 01017727
+missing data dimensions at file # 01017728
+missing data dimensions at file # 01017730
+Genre: Instrumental
+Genre: Electronic
+missing data dimensions at file # 00920996
+missing data dimensions at file # 01038209
+missing data dimensions at file # 01038211
+missing data dimensions at file # 01038212
+missing data dimensions at file # 01014718
+missing data dimensions at file # 00962475
+Genre: Hip-Hop
+missing data dimensions at file # 00965108
+missing data dimensions at file # 00965110
+missing data dimensions at file # 00965111
