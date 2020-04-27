@@ -64,32 +64,27 @@ def wav_to_spect_overlay(path, IDList, out):
     plt.savefig(out)
     #plt.show()
 
-    
-if (__name__ == '__main__'):
 
+def generate_wav_from_mp3(in_path,out_path):
 
-    in_path = 'data/project3/train/'
-    in_path2 = 'data/project_waves/train/'
-    out_path ='data/project_waves/train/'
-    out_path2 ='data/project_spect/train/'
+   for root, dirs, files in os.walk(in_path, topdown=False):
+       for name in files:
+           path = os.path.join(root, name)
+           out  = os.path.join(out_path, name.split(".")[0]+".wav")
 
-    make_dirs()
+           convert_mp3_to_wav(path, out)
 
-#    for root, dirs, files in os.walk(in_path, topdown=False):
-#        for name in files:
-#            path = os.path.join(root, name)
-#            out  = os.path.join(out_path, name.split(".")[0]+".wav")
-#
-#            convert_mp3_to_wav(path, out)
-    '''
+def generate_spects_from_wav(in_path2,out_path2):
+
     for root, dirs, files in os.walk(in_path2, topdown=False):
         for name in files:
             path = os.path.join(root, name)
             out  = os.path.join(out_path2, name.split(".")[0]+".png")
 
             wav_to_spect(path, out)
-            
-    '''
+
+def generate_wav_to_spect_overlay_genres():
+
     audio_path = './data/project_waves/train/'
     files = []
     with open('./data/project3/train.csv') as file:
@@ -123,6 +118,25 @@ if (__name__ == '__main__'):
     wav_to_spect_overlay(audio_path, train_list[4],'Electronic.png')
     print('Genre: Hip-Hop')
     wav_to_spect_overlay(audio_path, train_list[5],'HipHop.png')
-    
         # for name in dirs:
         #   print(os.path.join(root, name))
+
+if (__name__ == '__main__'):
+
+
+    in_path = 'data/project3/train/'
+    in_path2 = 'data/project_waves/train/'
+    out_path ='data/project_waves/train/'
+    out_path2 ='data/project_spect/train/'
+
+    make_dirs()
+
+    # UNCOMMENT if you want to do the following:
+
+    #generate_wav_from_mp3(in_path,out_path)
+
+    #generate_spects_from_wav(in_path2,out_path2)
+
+    #generate_wav_to_spect_overlay_genres()
+
+
