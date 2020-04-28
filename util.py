@@ -35,22 +35,21 @@ def convert_mp3_to_wav(src, dst):
 def wav_to_spect(path, out):
 
     samplerate, data = scipy.io.wavfile.read(path)
-    num_channels = data.shape[1]
+    freq, times, spectrogram = signal.spectrogram(data, samplerate)
 
-    freq, times, spectrogram = signal.spectrogram(data[:,1], samplerate)
-    plt.ylim(0, 8000)
-
-    plt.pcolormesh(times, freq, spectrogram)
-    #plt.ylabel('Frequency [Hz]')
-    #plt.xlabel('Time [sec]')
+    #plt.figure()
+    plt.ylim(0, 5000)
+    plt.pcolormesh(times, freq, spectrogram, vmin=0,vmax=0.06)
+    #plt.colorbar()
+    plt.axis('off')
     plt.savefig(out)
-    #plt.show()
+    plt.clf()
 
 def wav_to_spect_overlay(path, IDList, out):
     plt.figure(figsize=(14, 5))
     plt.ylim(0, 8000)
 
-    for i in IDList:    
+    for i in IDList:
         samplerate, data = scipy.io.wavfile.read(path+str(i)+'.wav')
         #print(data.shape)
         if len(data.shape) > 1:
@@ -121,11 +120,12 @@ def generate_wav_to_spect_overlay_genres():
         # for name in dirs:
         #   print(os.path.join(root, name))
 
+
 if (__name__ == '__main__'):
 
 
     in_path = 'data/project3/train/'
-    in_path2 = 'data/project_waves/train/'
+    in_path2 = 'data/project_waves_norm/train/'
     out_path ='data/project_waves/train/'
     out_path2 ='data/project_spect/train/'
 
@@ -135,8 +135,7 @@ if (__name__ == '__main__'):
 
     #generate_wav_from_mp3(in_path,out_path)
 
-    #generate_spects_from_wav(in_path2,out_path2)
+    generate_spects_from_wav(in_path2,out_path2)
 
     #generate_wav_to_spect_overlay_genres()
-
 
