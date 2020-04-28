@@ -78,4 +78,4 @@ if (__name__ == '__main__'):
     print("normalizing data...")
     normalize_data(waves_path, output_path, avg, sd)
 
-    print("Done. Normalized data has been written to data/normalized_data.csv")
+    print("Done. Normalized data has been written to "+output_path)
