@@ -46,7 +46,7 @@ def normalize_data(path, out_path, avg, std):
 
             if len(data.shape)>1:
                 data_norm = (data[:,0] - avg) / std
-                scipy.io.wavfile.write(out_path + name.split(".")[0], samplerate, data_norm)
+                scipy.io.wavfile.write(out_path + name.split(".")[0]+".wav", samplerate, data_norm)
 
 def make_dirs():
     try:
