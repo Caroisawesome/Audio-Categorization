@@ -6,6 +6,8 @@ from pydub import AudioSegment
 import matplotlib.pyplot as plt
 import os
 import csv
+import sys
+import normalization
 
 def make_dirs():
     try:
@@ -121,21 +123,52 @@ def generate_wav_to_spect_overlay_genres():
         #   print(os.path.join(root, name))
 
 
-if (__name__ == '__main__'):
+def generate_time_series_png():
+    print("NOT IMPLEMENTED")
+    return 0
 
+def generate_mfcc_png():
+    print("NOT IMPLEMENTED")
+    return 0
+
+if (__name__ == '__main__'):
 
     in_path = 'data/project3/train/'
     in_path2 = 'data/project_waves_norm/train/'
     out_path ='data/project_waves/train/'
     out_path2 ='data/project_spect/train/'
 
-    make_dirs()
+    if len(sys.argv) < 2:
+        print("Argument required:")
+        print("1: generate wav from mp3")
+        print("2: normalize data")
+        print("3: generate spectogram charts")
+        print("4: generate time series charts")
+        print("5: generate mfcc charts")
+        print("6: build genre spectogram overlays")
+    else:
+        input = int(sys.argv[1])
+        make_dirs()
 
-    # UNCOMMENT if you want to do the following:
+        if input == 1:
+            generate_wav_from_mp3(in_path,out_path)
+        elif input == 2:
+            normalization.normalize_data()
+        elif input == 3:
+            generate_spects_from_wav(in_path2,out_path2)
+        elif input == 4:
+            generate_time_series_png()
+        elif input == 5:
+            generate_mfcc_png()
+        elif input == 6:
+            generate_wav_to_spect_overlay_genres()
+        else:
+            print("could not understand input. try again.")
 
-    #generate_wav_from_mp3(in_path,out_path)
 
-    generate_spects_from_wav(in_path2,out_path2)
 
-    #generate_wav_to_spect_overlay_genres()
+
+
+
+
 
