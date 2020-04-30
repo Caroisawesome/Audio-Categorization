@@ -62,7 +62,7 @@ def make_dirs():
         pass
 
 
-def normalize_data():
+def normalize_wav_data():
 
     waves_path = 'data/project_waves/train/'
     output_path = 'data/project_waves_norm/train/'
@@ -81,4 +81,4 @@ def normalize_data():
     print("Done. Normalized data has been written to "+output_path)
 
 if (__name__ == '__main__'):
-    normalize_data()
+    normalize_wav_data()
