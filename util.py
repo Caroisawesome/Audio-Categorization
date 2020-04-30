@@ -8,26 +8,14 @@ import os
 import csv
 import sys
 import normalization
+import librosa.display
 
-def make_dirs():
+def make_dirs(path):
     try:
-        os.makedirs("data/project_waves")
+        os.makedirs(path)
     except FileExistsError:
         # directory already exists
         pass
-
-    try:
-        os.makedirs("data/project_waves/train")
-    except FileExistsError:
-        # directory already exists
-        pass
-
-    try:
-        os.makedirs("data/project_spect/train")
-    except FileExistsError:
-        # directory already exists
-        pass
-
 
 def convert_mp3_to_wav(src, dst):
     sound = AudioSegment.from_mp3(src)
@@ -39,7 +27,6 @@ def wav_to_spect(path, out):
     samplerate, data = scipy.io.wavfile.read(path)
     freq, times, spectrogram = signal.spectrogram(data, samplerate)
 
-    #plt.figure()
     plt.ylim(0, 5000)
     plt.pcolormesh(times, freq, spectrogram, vmin=0,vmax=0.06)
     #plt.colorbar()
@@ -123,9 +110,17 @@ def generate_wav_to_spect_overlay_genres():
         #   print(os.path.join(root, name))
 
 
-def generate_time_series_png():
-    print("NOT IMPLEMENTED")
-    return 0
+def generate_time_series_png(in_path, out_path):
+    for root, dirs, files in os.walk(in_path, topdown=False):
+        for name in files:
+            path = os.path.join(root, name)
+            out  = os.path.join(out_path, name.split(".")[0]+".png")
+            samplerate, data = scipy.io.wavfile.read(path)
+            #            plt.figure()
+            librosa.display.waveplot(data, sr=samplerate)
+            plt.axis('off')
+            plt.savefig(out)
+            plt.clf()
 
 def generate_mfcc_png():
     print("NOT IMPLEMENTED")
@@ -133,10 +128,11 @@ def generate_mfcc_png():
 
 if (__name__ == '__main__'):
 
-    in_path = 'data/project3/train/'
-    in_path2 = 'data/project_waves_norm/train/'
-    out_path ='data/project_waves/train/'
-    out_path2 ='data/project_spect/train/'
+    path_train_mp3 = 'data/project3/train/'
+    path_train_wav_norm = 'data/project_waves_norm/train/'
+    path_train_wav ='data/project_waves/train/'
+    path_train_spect ='data/project_spect/train/'
+    out_path_timeseries = 'data/project_timeseries/train/'
 
     if len(sys.argv) < 2:
         print("Argument required:")
@@ -148,16 +144,18 @@ if (__name__ == '__main__'):
         print("6: build genre spectogram overlays")
     else:
         input = int(sys.argv[1])
-        make_dirs()
 
         if input == 1:
-            generate_wav_from_mp3(in_path,out_path)
+            make_dirs(path_train_wav)
+            generate_wav_from_mp3(path_train_mp3,path_train_wav)
         elif input == 2:
-            normalization.normalize_data()
+            normalization.normalize_wav_data()
         elif input == 3:
-            generate_spects_from_wav(in_path2,out_path2)
+            make_dirs(path_train_spect)
+            generate_spects_from_wav(path_train_wav_norm, path_train_spect)
         elif input == 4:
-            generate_time_series_png()
+            make_dirs(out_path_timeseries)
+            generate_time_series_png(path_train_wav_norm, out_path_timeseries)
         elif input == 5:
             generate_mfcc_png()
         elif input == 6:
