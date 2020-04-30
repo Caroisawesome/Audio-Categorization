@@ -34,4 +34,4 @@ if __name__ == '__main__':
         fig, ax = plt.subplots()
         ax.plot(time, audio)
         plt.axis('off')
-        plt.savefig('./data/project_time_series/train/'+ filename,bbox_inches='tight',transparent=True, pad_inches=0 )
+        plt.savefig('./project_time_series/train/'+ filename,bbox_inches='tight',transparent=True, pad_inches=0 )
