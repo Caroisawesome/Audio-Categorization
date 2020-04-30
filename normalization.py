@@ -62,7 +62,7 @@ def make_dirs():
         pass
 
 
-if (__name__ == '__main__'):
+def normalize_wav_data():
 
     waves_path = 'data/project_waves/train/'
     output_path = 'data/project_waves_norm/train/'
@@ -79,3 +79,6 @@ if (__name__ == '__main__'):
     normalize_data(waves_path, output_path, avg, sd)
 
     print("Done. Normalized data has been written to "+output_path)
+
+if (__name__ == '__main__'):
+    normalize_wav_data()
