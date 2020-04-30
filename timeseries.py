@@ -19,7 +19,7 @@ Start of our program
 if __name__ == '__main__':
 
     #filename = "C:\Users\alysh\Documents\03-School\UNM_Class_Work\Spring2020\CS529\p3_audiocategorization\data\train/00907299.mp3'"
-    data_dir = './data/project_waves/train'
+    data_dir = './data/project_waves_norm/train'
     audio_files = glob(data_dir + '/*.wav')
 
     print(len(audio_files))
