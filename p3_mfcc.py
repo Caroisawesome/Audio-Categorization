@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import librosa.display
 import os
 import os.path
+import numpy as np
 
 
 '''
@@ -31,18 +32,24 @@ def getMFCCs():
         data = csv.reader(file)
         files = list(data)
     files.remove(files[0])
-    for i in files[:10]:
+    for i in files:
         path = './data/project_waves_norm/train/'+str(i[0])+'.wav'
         print(path)
-        plt.ylim(0, 5000)
-        k,sr = librosa.load(path)
-        mfccs = librosa.feature.mfcc(k, sr=sr)
-        print(mfccs.shape)
-        plt.figure(figsize=(10,4))
-        librosa.display.specshow(mfccs,x_axis='time',y_axis='mel')
-        out_path = out+str(i[0])+'.png'
-        plt.savefig(out_path)
-
+        try:
+            plt.ylim(0, 5000)
+            k,sr = librosa.load(path)
+            mfccs = librosa.feature.mfcc(k, sr=sr)
+            print(mfccs.shape)
+            plt.figure(figsize=(10,4))
+            xx = np.arange(0,mfccs.data.shape[1]+1,1)
+            yy = np.arange(0,mfccs.data.shape[0]+1,1)
+            librosa.display.specshow(mfccs,x_coords=xx, y_coords=yy)
+            out_path = out+str(i[0])+'.png'
+            plt.savefig(out_path)
+            plt.close()
+        except:
+            print(i)
+            pass
 
 
 '''
@@ -67,14 +74,6 @@ def wav_to_mfcc_overlay(path, IDList, out):
             #Plot the signal as a spectrogram:
             mfccs = librosa.feature.mfcc(k, sr=sr)
             librosa.display.specshow(mfccs,x_axis='time',y_axis='mel')
-            #spec is a short term Fourier Transform
-            #spec = librosa.stft(k)
-            #spec_db = librosa.amplitude_to_db(abs(spec))
-            #plt.subplot(10,1,int(x)+1)
-            #plt.figure(figsize=(14, 5))
-            #librosa.display.specshow(spec_db, sr=sr, x_axis='time', y_axis='hz')
-            #If to pring log of frequencies
-            #librosa.display.specshow(spec_db, sr=sr, x_axis='time', y_axis='log')
         except:
             print(i)
     plt.ylabel('Frequency [Hz]')
@@ -135,8 +134,8 @@ def make_graphs():
 '''
 if __name__ == '__main__':
 
-    initial_test = 1
-    gen_all_graphs = 0
+    initial_test = 0
+    gen_all_graphs = 1
     train = 0
     classify = 0
 
@@ -146,28 +145,3 @@ if __name__ == '__main__':
 
     if gen_all_graphs:
         getMFCCs()
-
-    '''
-    for x in range(10):
-        audio_path_new = audio_path + str(files[x][0])+'.wav'
-        #print(audio_path_new)
-        k , sr = librosa.load(audio_path_new)
-        #print(type(k), type(sr))
-        #Plot the signal:
-        plt.figure(figsize=(14, 5))
-        plt.subplot(10,1,int(x)+1)
-        librosa.display.waveplot(k, sr=sr)
-
-        #Plot the signal as a spectrogram:
-        #spec is a short term Fourier Transform
-        spec = librosa.stft(k)
-        spec_db = librosa.amplitude_to_db(abs(spec))
-        specs.append(spec_db)
-        #plt.subplot(10,1,int(x)+1)
-        #plt.figure(figsize=(14, 5))
-        librosa.display.specshow(spec_db, sr=sr, x_axis='time', y_axis='hz')
-        #If to pring log of frequencies
-        #librosa.display.specshow(spec_db, sr=sr, x_axis='time', y_axis='log')
-    plt.colorbar()
-    '''
-    print('======================================')
