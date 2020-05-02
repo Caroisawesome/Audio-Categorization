@@ -126,7 +126,9 @@ def read_data(directory, labels):
     t_files  = []
     names    = []
     data     = []
-    #labels_l = []
+    labels_l = []
+    print('Walking data directory')
+    print('====================================================================')
     for root, dirs, files in os.walk(directory, topdown=False):
         for name in files:
             t_files.append(os.path.join(root, name))
@@ -135,6 +137,8 @@ def read_data(directory, labels):
             #print(os.path.join(root, name))
             #print(base)
 
+    print('Reading images')
+    print('====================================================================')
     for i in range(0, len(t_files)):
         image = mpimg.imread(t_files[i])
         #features = np.asarray(Image.open(t_files[i]))
@@ -158,12 +162,16 @@ initialize_network ::
 ===============================================================================
 '''
 def initialize_network():
+    print('Initializing feed forward network')
+    print('====================================================================')
     network = models.Sequential()
-    network.add(Dense(100000, input_dim=549072, init='uniform', activation='relu'))
-    network.add(Dense(10000, init='uniform', activation='relu'))
-    network.add(Dense(1000,  activation='relu', kernel_initializer='uniform'))
+    network.add(Dense(10000, input_dim=549072, init='uniform', activation='relu'))
+    network.add(Dense(1000, init='uniform', activation='relu'))
     network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
+    network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
     network.add(Dense(6, activation='softmax'))
+    print('Feed forward network initialized')
+    print('====================================================================')
     #network.add(Activation('softmax'))
     return network
 
@@ -178,9 +186,13 @@ train_network :: Using stochastic gradient descent.
 ===============================================================================
 '''
 def train_network(train_labels, train_data, network):
+    print('Training feed forward network')
+    print('====================================================================')
     sgd = SGD(lr=0.01)
     network.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     network.fit(train_data, train_labels, epochs=50, batch_size=100, verbose=1)
+    print('Feed forward network trained')
+    print('====================================================================')
     return network
 
 ''' 
@@ -196,11 +208,14 @@ evaluate_network ::
 def evaluate_network(test_labels, test_data, network):
     (loss, accuracy) = network.evaluate(test_data, test_labels, batch_size=100, verbose=1)
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+    return loss, accuracy
 
 if (__name__ == '__main__'):
-    path           = 'project_spect/train/'
-    labels         = gen_labels()
-    data, labels_o = read_data(path, labels)
-    #network        = initialize_network()
-    #t_network      = train_network(labels_l, data, network)
+    path                   = 'project_spect/train/'
+    #test_labels, test_data = test_labels_and_data()
+    labels                 = gen_labels()
+    data, labels_o         = read_data(path, labels)
+    network                = initialize_network()
+    #t_network              = train_network(labels_l, data, network)
+    #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
 
