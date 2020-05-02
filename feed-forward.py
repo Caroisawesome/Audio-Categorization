@@ -6,6 +6,7 @@ from keras.optimizers import SGD
 from keras.utils import np_utils
 from keras.layers import Dense
 from keras.layers import Activation
+import tensorflow as tf
 from PIL import Image
 #from imutils import paths
 #import imutils
@@ -21,6 +22,7 @@ import argparse
 import os
 import csv
 
+print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
 
     Various functions and implementations borrowed or inspired from:
@@ -147,6 +149,8 @@ def read_data(directory, labels):
         labels_l.append(labels[names[i]])
         #print(data[i])
 
+    pickle(data)
+    pickle(labels_l)
     return data, labels_l
 
 ''' 
@@ -211,11 +215,28 @@ def evaluate_network(test_labels, test_data, network):
     return loss, accuracy
 
 if (__name__ == '__main__'):
-    path                   = 'project_spect/train/'
-    #test_labels, test_data = test_labels_and_data()
-    labels                 = gen_labels()
-    data, labels_o         = read_data(path, labels)
-    network                = initialize_network()
-    #t_network              = train_network(labels_l, data, network)
-    #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+    paths = ['project_spect/train/', 'project_timeseries/train/']
+    if len(sys.agrgv) < 2:
+        print('Argument required:')
+        print('1: use spectograms')
+        print('2: use timeseries')
+    else:
+        input = int(sys.argv[1])
+        if input == 1:
+            labels                 = gen_labels()
+            data, labels_o         = read_data(paths[0], labels)
+            #test_labels, test_data = test_labels_and_data()
+            network                = initialize_network()
+            t_network              = train_network(labels_l, data, network)
+            #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+        if input == 2:
+            labels                 = gen_labels()
+            data, labels_o         = read_data(paths[1], labels)
+            #test_labels, test_data = test_labels_and_data()
+            network                = initialize_network()
+            t_network              = train_network(labels_l, data, network)
+            #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+
+
+
 
