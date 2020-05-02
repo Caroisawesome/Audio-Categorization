@@ -31,7 +31,7 @@ def wav_to_spect(path, out):
     plt.pcolormesh(times, freq, spectrogram, vmin=0,vmax=0.06)
     #plt.colorbar()
     plt.axis('off')
-    plt.savefig(out)
+    plt.savefig(out,bbox_inches='tight',pad_inches = 0)
     plt.clf()
 
 def wav_to_spect_overlay(path, IDList, out):
@@ -119,7 +119,7 @@ def generate_time_series_png(in_path, out_path):
             #            plt.figure()
             librosa.display.waveplot(data, sr=samplerate)
             plt.axis('off')
-            plt.savefig(out)
+            plt.savefig(out,bbox_inches='tight',pad_inches = 0)
             plt.clf()
 
 def generate_mfcc_png():
