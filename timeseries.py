@@ -19,7 +19,7 @@ Start of our program
 if __name__ == '__main__':
 
     #filename = "C:\Users\alysh\Documents\03-School\UNM_Class_Work\Spring2020\CS529\p3_audiocategorization\data\train/00907299.mp3'"
-    data_dir = './data/project_waves/train'
+    data_dir = './data/project_waves_norm/train'
     audio_files = glob(data_dir + '/*.wav')
 
     print(len(audio_files))
@@ -34,4 +34,4 @@ if __name__ == '__main__':
         fig, ax = plt.subplots()
         ax.plot(time, audio)
         plt.axis('off')
-        plt.savefig('./data/project_time_series/train/'+ filename,bbox_inches='tight',transparent=True, pad_inches=0 )
+        plt.savefig('./project_time_series/train/'+ filename,bbox_inches='tight',transparent=True, pad_inches=0 )
