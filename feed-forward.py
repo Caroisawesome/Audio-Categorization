@@ -12,6 +12,7 @@ from PIL import Image
 #import imutils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
@@ -33,21 +34,6 @@ import csv
     https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/
 
 """
-
-
-''' 
-===============================================================================
-
-@params:
-
-@returns: 
-===============================================================================
-'''
-#def convert_to_mfcc(audio):
-#    f, _ = librosa.load(audio)
-#    mfcc = librosa.feature.mfcc(f)
-#    mfcc /= np.amax(np.absolute(mfcc))
-#    return np.ndarray.flatten(mfcc)[:25000]
 
 ''' 
 ===============================================================================
@@ -71,29 +57,6 @@ def gen_labels():
     #print(labels)
     return labels
     #for g in genres:
-
-''' 
-===============================================================================
-
-@params:
-
-@returns: 
-===============================================================================
-'''
-#def gen_labels():
-#    labels   = []
-#    #genres   = [0, 1, 2, 3, 4, 5]
-#
-#    with open('data/project3/train.csv', 'r') as csvfile:
-#        reader = csv.reader(csvfile)
-#        tmp = list(list(rec) for rec in csv.reader(csvfile, delimiter=','))
-#        for row in tmp:
-#            if row[0] == 'new_id':
-#                continue
-#            labels.append(row[1])
-#    #print(labels)
-#    return labels
-#    #for g in genres:
 
 ''' 
 ===============================================================================
