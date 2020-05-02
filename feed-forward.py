@@ -149,8 +149,8 @@ def read_data(directory, labels):
         labels_l.append(labels[names[i]])
         #print(data[i])
 
-    pickle(data)
-    pickle(labels_l)
+    #pickle(data)
+    #pickle(labels_l)
     return data, labels_l
 
 ''' 
