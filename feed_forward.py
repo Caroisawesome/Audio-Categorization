@@ -190,6 +190,16 @@ def evaluate_network(test_labels, test_data, network):
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
+''' 
+===============================================================================
+
+get_picklefiles ::
+
+@params:
+
+@returns: 
+===============================================================================
+'''
 def get_picklefiles():
     pickles = []
     for root, dirs, files in os.walk('.', topdown=False):
