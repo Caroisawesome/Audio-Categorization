@@ -12,17 +12,16 @@ from PIL import Image
 #import imutils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-import librosa
-import librosa.feature
-import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
 import argparse
+import pickle
 import os
+import sys
 import csv
 
-print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
+#print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
 
     Various functions and implementations borrowed or inspired from:
@@ -115,6 +114,18 @@ def image_to_feature_vector(image, size=(496, 369)):
 ''' 
 ===============================================================================
 
+@params:
+
+@returns: 
+===============================================================================
+'''
+def write_pickle_file(data, directory, type_r):
+    filename = directory.split('/')[0] + '_' + type_r + '_pickle'
+    pickle.dump(data, open(filename, 'wb'))
+
+''' 
+===============================================================================
+
 read_data :: Read image data and store as numpy array
 
 TODO :: finish code to read as image data and convert to numpy array.
@@ -149,8 +160,10 @@ def read_data(directory, labels):
         labels_l.append(labels[names[i]])
         #print(data[i])
 
-    #pickle(data)
-    #pickle(labels_l)
+    print('Writing pickle data')
+    write_pickle_file(data, directory, 'data')
+    print('Writing pickle labels')
+    write_pickle_file(data, directory, 'labels')
     return data, labels_l
 
 ''' 
@@ -214,27 +227,54 @@ def evaluate_network(test_labels, test_data, network):
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
+def get_picklefiles():
+    pickles = []
+    for root, dirs, files in os.walk('.', topdown=False):
+        for name in files:
+            base = os.path.splitext(name)[0]
+            if 'pickle' in base:
+                pickles.append(name)
+                print(base)
+    return pickles
+
 if (__name__ == '__main__'):
-    paths = ['project_spect/train/', 'project_timeseries/train/']
-    if len(sys.agrgv) < 2:
+    paths       = ['project_spect/train/', 'project_timeseries/train/']
+    pickles     = get_picklefiles()
+    labels_dict = []
+    data        = []
+    labels_list = []
+
+    if len(sys.argv) < 2:
         print('Argument required:')
         print('1: use spectograms')
         print('2: use timeseries')
     else:
         input = int(sys.argv[1])
         if input == 1:
-            labels                 = gen_labels()
-            data, labels_o         = read_data(paths[0], labels)
+            if 'project_spect_data_pickle' not in pickles and 'project_spect_labels_pickle' not in pickles:
+                print('Running read_data')
+                labels_dict        = gen_labels()
+                data, labels_list  = read_data(paths[0], labels_dict)
+            else:
+                print('Reading pickle files')
+                data        = pickle.load(open('project_spect_data_pickle', 'rb'))
+                labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
             #test_labels, test_data = test_labels_and_data()
-            network                = initialize_network()
-            t_network              = train_network(labels_l, data, network)
+            #network                = initialize_network()
+            #t_network              = train_network(labels_l, data, network)
             #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
         if input == 2:
-            labels                 = gen_labels()
-            data, labels_o         = read_data(paths[1], labels)
+            if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
+                print('Running read_data')
+                labels_dict        = gen_labels()
+                data, labels_list  = read_data(paths[1], labels_dict)
+            else:
+                print('Reading pickle files')
+                data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
+                labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
             #test_labels, test_data = test_labels_and_data()
-            network                = initialize_network()
-            t_network              = train_network(labels_l, data, network)
+            #network                = initialize_network()
+            #t_network              = train_network(labels_l, data, network)
             #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
 
 
