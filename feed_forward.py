@@ -126,7 +126,7 @@ def read_data(directory, labels):
     print('Writing pickle data')
     write_pickle_file(data, directory, 'data')
     print('Writing pickle labels')
-    write_pickle_file(data, directory, 'labels')
+    write_pickle_file(labels_l, directory, 'labels')
     return data, labels_l
 
 ''' 
