@@ -22,15 +22,18 @@ import os
 import sys
 import csv
 
-
+# Dimensions of data being passed into network
 DIM_ROWS = 20
 DIM_COLS = 20
-DIM_CHANNELS = 3 
+DIM_CHANNELS = 3
 """
 DIM_ROWS = 369
 DIM_COLS = 496
 DIM_CHANNELS = 3
 """
+
+# Number of training data (remainder of data will go to testing)
+NUM_TRAINING = 2000
 
 
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
@@ -139,7 +142,7 @@ def read_data(directory, labels):
     #write_pickle_file(data, directory, 'data')
     print('Writing pickle labels')
     #write_pickle_file(labels_l, directory, 'labels')
-    return np.array(data), labels_l
+    return data, labels_l
 
 ''' 
 ===============================================================================
@@ -249,9 +252,9 @@ if (__name__ == '__main__'):
             print('Initializing Network')
             network                = initialize_network()
             print('Training network')
-            t_network              = train_network(labels_list, data, network)
+            t_network              = train_network(labels_list[:NUM_TRAINING], data[:NUM_TRAINING], network)
             print('Evaluating network')
-            loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+            loss, accuracy         = evaluate_network(labels_list[NUM_TRAINING:], data[NUM_TRAINING:], t_network)
             print("loss", loss)
             print("accuracy", accuracy)
         if input == 2:
