@@ -4,6 +4,7 @@ from keras import models
 from keras import layers
 from keras.optimizers import SGD
 from keras.utils import np_utils
+from keras.utils import to_categorical
 from keras.layers import Dense
 from keras.layers import Activation
 import tensorflow as tf
@@ -12,7 +13,6 @@ from PIL import Image
 #import imutils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-import librosa.display
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
@@ -115,19 +115,20 @@ def read_data(directory, labels):
 
     print('Reading images')
     print('====================================================================')
+    data     = np.zeros((len(t_files),369,496,3))
     for i in range(0, len(t_files)):
         image = mpimg.imread(t_files[i])
-        #features = np.asarray(Image.open(t_files[i]))
-        features = np.array(image).flatten() #image_to_feature_vector(image)
-        data.append(features)
+        np_image = np.array(image)[:,: , :3]
+        data[i] = np_image#.flatten() #image_to_feature_vector(image)
         labels_l.append(labels[names[i]])
         #print(data[i])
 
+    labels_l = to_categorical(labels_l)
     print('Writing pickle data')
-    write_pickle_file(data, directory, 'data')
+    #write_pickle_file(data, directory, 'data')
     print('Writing pickle labels')
-    write_pickle_file(labels_l, directory, 'labels')
-    return data, labels_l
+    #write_pickle_file(labels_l, directory, 'labels')
+    return np.array(data), labels_l
 
 ''' 
 ===============================================================================
@@ -145,6 +146,7 @@ def initialize_network():
     print('Initializing feed forward network')
     print('====================================================================')
     network = models.Sequential()
+    network.add(layers.Flatten(input_shape=[ 369,496, 3]))
     network.add(Dense(10000, input_dim=549072, init='uniform', activation='relu'))
     network.add(Dense(1000, init='uniform', activation='relu'))
     network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
@@ -233,9 +235,14 @@ if (__name__ == '__main__'):
                 data        = pickle.load(open('project_spect_data_pickle', 'rb'))
                 labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
             #test_labels, test_data = test_labels_and_data()
-            #network                = initialize_network()
-            #t_network              = train_network(labels_l, data, network)
-            #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+            print('Initializing Network')
+            network                = initialize_network()
+            print('Training network')
+            t_network              = train_network(labels_list, data, network)
+            print('Evaluating network')
+            loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+            print("loss", loss)
+            print("accuracy", accuracy)
         if input == 2:
             if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
                 print('Running read_data')
