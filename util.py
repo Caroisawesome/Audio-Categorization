@@ -1,3 +1,4 @@
+
 import numpy as np
 import scipy.io.wavfile
 from scipy import signal
@@ -10,6 +11,15 @@ import sys
 import normalization
 import librosa.display
 
+''' 
+===============================================================================
+make_dirs: Creates directories based on a given path
+
+@params: path - string of the path to build directories for
+
+@returns: void
+===============================================================================
+'''
 def make_dirs(path):
     try:
         os.makedirs(path)
@@ -17,11 +27,29 @@ def make_dirs(path):
         # directory already exists
         pass
 
+''' 
+===============================================================================
+convert_mp3_to_wav: Converts an mp3 file to a wave file
+
+@params: src - string representing the path and name of the mp3 file as input
+         dst - string representing the path and name of the wave file to output
+
+@returns: void
+===============================================================================
+'''
 def convert_mp3_to_wav(src, dst):
     sound = AudioSegment.from_mp3(src)
     sound.export(dst, format="wav")
 
+''' 
+===============================================================================
+wav_to_spect: Convert a wave file to a spectrogram
 
+@params: path - string 
+
+@returns: 
+===============================================================================
+'''
 def wav_to_spect(path, out):
 
     samplerate, data = scipy.io.wavfile.read(path)
@@ -52,27 +80,45 @@ def wav_to_spect_overlay(path, IDList, out):
     plt.savefig(out)
     #plt.show()
 
+''' 
+===============================================================================
 
+@params:
+
+@returns: 
+===============================================================================
+'''
 def generate_wav_from_mp3(in_path,out_path):
-
    for root, dirs, files in os.walk(in_path, topdown=False):
        for name in files:
            path = os.path.join(root, name)
            out  = os.path.join(out_path, name.split(".")[0]+".wav")
-
            convert_mp3_to_wav(path, out)
 
-def generate_spects_from_wav(in_path2,out_path2):
+''' 
+===============================================================================
 
+@params:
+
+@returns: 
+===============================================================================
+'''
+def generate_spects_from_wav(in_path2,out_path2):
     for root, dirs, files in os.walk(in_path2, topdown=False):
         for name in files:
             path = os.path.join(root, name)
             out  = os.path.join(out_path2, name.split(".")[0]+".png")
-
             wav_to_spect(path, out)
 
-def generate_wav_to_spect_overlay_genres():
+''' 
+===============================================================================
 
+@params:
+
+@returns: 
+===============================================================================
+'''
+def generate_wav_to_spect_overlay_genres():
     audio_path = './data/project_waves/train/'
     files = []
     with open('./data/project3/train.csv') as file:
@@ -109,7 +155,14 @@ def generate_wav_to_spect_overlay_genres():
         # for name in dirs:
         #   print(os.path.join(root, name))
 
+''' 
+===============================================================================
 
+@params:
+
+@returns: 
+===============================================================================
+'''
 def generate_time_series_png(in_path, out_path):
     for root, dirs, files in os.walk(in_path, topdown=False):
         for name in files:
@@ -122,6 +175,14 @@ def generate_time_series_png(in_path, out_path):
             plt.savefig(out,bbox_inches='tight',pad_inches = 0)
             plt.clf()
 
+''' 
+===============================================================================
+
+@params:
+
+@returns: 
+===============================================================================
+'''
 def generate_mfcc_png():
     print("NOT IMPLEMENTED")
     return 0
