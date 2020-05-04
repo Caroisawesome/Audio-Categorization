@@ -22,6 +22,17 @@ import os
 import sys
 import csv
 
+
+DIM_ROWS = 20
+DIM_COLS = 20
+DIM_CHANNELS = 3 
+"""
+DIM_ROWS = 369
+DIM_COLS = 496
+DIM_CHANNELS = 3
+"""
+
+
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
 
@@ -69,7 +80,7 @@ https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and
 @returns: 
 ===============================================================================
 '''
-def image_to_feature_vector(image, size=(496, 369)):
+def image_to_feature_vector(image, size=(DIM_ROWS, DIM_COLS)):
 	# resize the image to a fixed size, then flatten the image into
 	# a list of raw pixel intensities
 	return np.resize(image, size).flatten()
@@ -115,10 +126,10 @@ def read_data(directory, labels):
 
     print('Reading images')
     print('====================================================================')
-    data     = np.zeros((len(t_files),369,496,3))
+    data     = np.zeros((len(t_files),DIM_ROWS,DIM_COLS,DIM_CHANNELS))
     for i in range(0, len(t_files)):
         image = mpimg.imread(t_files[i])
-        np_image = np.array(image)[:,: , :3]
+        np_image = np.array(image)[:DIM_ROWS, :DIM_COLS, :DIM_CHANNELS]
         data[i] = np_image#.flatten() #image_to_feature_vector(image)
         labels_l.append(labels[names[i]])
         #print(data[i])
@@ -146,7 +157,7 @@ def initialize_network():
     print('Initializing feed forward network')
     print('====================================================================')
     network = models.Sequential()
-    network.add(layers.Flatten(input_shape=[ 369,496, 3]))
+    network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS]))
     network.add(Dense(10000, input_dim=549072, init='uniform', activation='relu'))
     network.add(Dense(1000, init='uniform', activation='relu'))
     network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
