@@ -22,6 +22,25 @@ import os
 import sys
 import csv
 
+# Dimensions of data being passed into network
+DIM_ROWS = 369 # max 369
+DIM_COLS = 300 # max 496
+DIM_CHANNELS = 3 # max 3
+TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
+
+# NN Parameters
+EPOCHS = 50
+BATCH_SIZE = 100
+LEARNING_RATE = 0.01
+MOMENTUM = 0.9
+DECAY = 1e-6
+NESTEROV = True
+LOSS_FUNCTION = 'categorical_crossentropy'
+
+# Number of training data (remainder of data will go to testing)
+NUM_TRAINING = 2000
+
+
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
 
@@ -69,7 +88,7 @@ https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and
 @returns: 
 ===============================================================================
 '''
-def image_to_feature_vector(image, size=(496, 369)):
+def image_to_feature_vector(image, size=(DIM_ROWS, DIM_COLS)):
 	# resize the image to a fixed size, then flatten the image into
 	# a list of raw pixel intensities
 	return np.resize(image, size).flatten()
@@ -115,10 +134,10 @@ def read_data(directory, labels):
 
     print('Reading images')
     print('====================================================================')
-    data     = np.zeros((len(t_files),369,496,3))
+    data     = np.zeros((len(t_files),DIM_ROWS,DIM_COLS,DIM_CHANNELS))
     for i in range(0, len(t_files)):
         image = mpimg.imread(t_files[i])
-        np_image = np.array(image)[:,: , :3]
+        np_image = np.array(image)[:DIM_ROWS, :DIM_COLS, :DIM_CHANNELS]
         data[i] = np_image#.flatten() #image_to_feature_vector(image)
         labels_l.append(labels[names[i]])
         #print(data[i])
@@ -128,7 +147,7 @@ def read_data(directory, labels):
     #write_pickle_file(data, directory, 'data')
     print('Writing pickle labels')
     #write_pickle_file(labels_l, directory, 'labels')
-    return np.array(data), labels_l
+    return data, labels_l
 
 ''' 
 ===============================================================================
@@ -146,11 +165,11 @@ def initialize_network():
     print('Initializing feed forward network')
     print('====================================================================')
     network = models.Sequential()
-    network.add(layers.Flatten(input_shape=[ 369,496, 3]))
-    network.add(Dense(10000, input_dim=549072, init='uniform', activation='relu'))
-    network.add(Dense(1000, init='uniform', activation='relu'))
-    network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
+    network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS]))
+    network.add(Dense(1000, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
+    network.add(Dense(100, init='uniform', activation='relu'))
     network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
+    #network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
     network.add(Dense(6, activation='softmax'))
     print('Feed forward network initialized')
     print('====================================================================')
@@ -170,9 +189,9 @@ train_network :: Using stochastic gradient descent.
 def train_network(train_labels, train_data, network):
     print('Training feed forward network')
     print('====================================================================')
-    sgd = SGD(lr=0.01)
-    network.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    network.fit(train_data, train_labels, epochs=50, batch_size=100, verbose=1)
+    sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
+    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['accuracy'])
+    network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Feed forward network trained')
     print('====================================================================')
     return network
@@ -188,7 +207,7 @@ evaluate_network ::
 ===============================================================================
 '''
 def evaluate_network(test_labels, test_data, network):
-    (loss, accuracy) = network.evaluate(test_data, test_labels, batch_size=100, verbose=1)
+    (loss, accuracy) = network.evaluate(test_data, test_labels, batch_size=BATCH_SIZE, verbose=1)
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
@@ -234,15 +253,7 @@ if (__name__ == '__main__'):
                 print('Reading pickle files')
                 data        = pickle.load(open('project_spect_data_pickle', 'rb'))
                 labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
-            #test_labels, test_data = test_labels_and_data()
-            print('Initializing Network')
-            network                = initialize_network()
-            print('Training network')
-            t_network              = train_network(labels_list, data, network)
-            print('Evaluating network')
-            loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
-            print("loss", loss)
-            print("accuracy", accuracy)
+            
         if input == 2:
             if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
                 print('Running read_data')
@@ -252,10 +263,13 @@ if (__name__ == '__main__'):
                 print('Reading pickle files')
                 data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
                 labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
-            #test_labels, test_data = test_labels_and_data()
-            #network                = initialize_network()
-            #t_network              = train_network(labels_l, data, network)
-            #loss, accuracy         = evaluate_network(test_labels, test_data, t_network)
+                
+        print('Initializing Network')
+        network        = initialize_network()
+        t_network      = train_network(labels_list[:NUM_TRAINING], data[:NUM_TRAINING], network)
+        loss, accuracy = evaluate_network(labels_list[NUM_TRAINING:], data[NUM_TRAINING:], t_network)
+        print("loss", loss)
+        print("accuracy", accuracy)
 
 
 
