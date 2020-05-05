@@ -1,4 +1,3 @@
-
 import numpy as np
 import scipy.io.wavfile
 from scipy import signal
@@ -11,10 +10,11 @@ import sys
 import normalization
 import librosa.display
 
-''' 
+IMG_DPI=75
+
+'''
 ===============================================================================
 make_dirs: Creates directories based on a given path
-
 @params: path - string of the path to build directories for
 
 @returns: void
@@ -27,10 +27,9 @@ def make_dirs(path):
         # directory already exists
         pass
 
-''' 
+'''
 ===============================================================================
 convert_mp3_to_wav: Converts an mp3 file to a wave file
-
 @params: src - string representing the path and name of the mp3 file as input
          dst - string representing the path and name of the wave file to output
 
@@ -41,13 +40,13 @@ def convert_mp3_to_wav(src, dst):
     sound = AudioSegment.from_mp3(src)
     sound.export(dst, format="wav")
 
-''' 
+'''
 ===============================================================================
 wav_to_spect: Convert a wave file to a spectrogram
+@params: path - string representing path to wav file
+         out - path and filename of resulting spectrogram image
 
-@params: path - string 
-
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def wav_to_spect(path, out):
@@ -59,9 +58,19 @@ def wav_to_spect(path, out):
     plt.pcolormesh(times, freq, spectrogram, vmin=0,vmax=0.06)
     #plt.colorbar()
     plt.axis('off')
-    plt.savefig(out,bbox_inches='tight',pad_inches = 0)
+    plt.savefig(out,bbox_inches='tight',pad_inches=0, dpi=IMG_DPI)
     plt.clf()
 
+'''
+===============================================================================
+wav_to_spect_overlay: Generate spectrogram of all songs in a genre
+@params: path - string representing path to the wav files
+         IDList -
+         out - string representing path and name of saved image
+
+@returns: void
+===============================================================================
+'''
 def wav_to_spect_overlay(path, IDList, out):
     plt.figure(figsize=(14, 5))
     plt.ylim(0, 8000)
@@ -80,12 +89,13 @@ def wav_to_spect_overlay(path, IDList, out):
     plt.savefig(out)
     #plt.show()
 
-''' 
+'''
 ===============================================================================
+generate_wav_from_mp3 - Converts mp3 files to wav files
+@params: in_path - string - path to the directory containing mp3s
+         out_path - string - path to the directory that will contain the wav files
 
-@params:
-
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def generate_wav_from_mp3(in_path,out_path):
@@ -95,12 +105,13 @@ def generate_wav_from_mp3(in_path,out_path):
            out  = os.path.join(out_path, name.split(".")[0]+".wav")
            convert_mp3_to_wav(path, out)
 
-''' 
+'''
 ===============================================================================
+generate_spects_from_wav - Generate spectograms from wav files
+@params: in_path2 - string - path to directory containing wav files
+         out_path2 - string - path to directory that will contain the spectograms
 
-@params:
-
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def generate_spects_from_wav(in_path2,out_path2):
@@ -110,12 +121,12 @@ def generate_spects_from_wav(in_path2,out_path2):
             out  = os.path.join(out_path2, name.split(".")[0]+".png")
             wav_to_spect(path, out)
 
-''' 
+'''
 ===============================================================================
+generate_wav_to_spect_overlay_genres
+@params: void
 
-@params:
-
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def generate_wav_to_spect_overlay_genres():
@@ -155,12 +166,13 @@ def generate_wav_to_spect_overlay_genres():
         # for name in dirs:
         #   print(os.path.join(root, name))
 
-''' 
+'''
 ===============================================================================
+generate_time_series_png - Generates timeseries image from wav file
+@params: in_path - string - path and name of wav file
+         out_path - string - path and name of resulting timeseries image
 
-@params:
-
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def generate_time_series_png(in_path, out_path):
@@ -169,18 +181,17 @@ def generate_time_series_png(in_path, out_path):
             path = os.path.join(root, name)
             out  = os.path.join(out_path, name.split(".")[0]+".png")
             samplerate, data = scipy.io.wavfile.read(path)
-            #            plt.figure()
             librosa.display.waveplot(data, sr=samplerate)
             plt.axis('off')
-            plt.savefig(out,bbox_inches='tight',pad_inches = 0)
+            plt.savefig(out,bbox_inches='tight',pad_inches = 0, dpi=IMG_DPI)
             plt.clf()
 
-''' 
+'''
 ===============================================================================
-
+generate_mfcc_png
 @params:
 
-@returns: 
+@returns:
 ===============================================================================
 '''
 def generate_mfcc_png():

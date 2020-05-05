@@ -23,8 +23,8 @@ import sys
 import csv
 
 # Dimensions of data being passed into network
-DIM_ROWS = 369 # max 369
-DIM_COLS = 300 # max 496
+DIM_ROWS = 372 # max 372
+DIM_COLS = 277 # max 277
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
@@ -190,7 +190,7 @@ def train_network(train_labels, train_data, network):
     print('Training feed forward network')
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
-    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['accuracy'])
+    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
     network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Feed forward network trained')
     print('====================================================================')
