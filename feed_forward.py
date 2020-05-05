@@ -24,8 +24,8 @@ import csv
 import neptune
 
 # Dimensions of data being passed into network
-DIM_ROWS = 372 # max 372
-DIM_COLS = 277 # max 277
+DIM_ROWS = 277 # max 277
+DIM_COLS = 372 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
