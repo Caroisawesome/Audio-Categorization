@@ -288,6 +288,29 @@ def run_NN(train_data, train_labels, test_data, test_labels):
     print("accuracy", accuracy)
 
 
+def preprocess_data(input_num, pickles, paths):
+    if input_num == 1:
+        if 'project_spect_data_pickle' not in pickles and 'project_spect_labels_pickle' not in pickles:
+            print('running read_data')
+            labels_dict        = gen_labels()
+            data, labels_list  = read_data(paths[0], labels_dict)
+        else:
+            print('reading pickle files')
+            data        = pickle.load(open('project_spect_data_pickle', 'rb'))
+            labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
+    
+    if input_num == 2:
+        if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
+            print('Running read_data')
+            labels_dict        = gen_labels()
+            data, labels_list  = read_data(paths[0], labels_dict)
+            data, labels_list  = read_data(paths[1], labels_dict)
+        else:
+            print('Reading pickle files')
+            data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
+            labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
+    return data, labels_list
+
 if (__name__ == '__main__'):
     paths       = ['project_spect/train/', 'project_timeseries/train/']
     pickles     = get_picklefiles()
@@ -300,25 +323,6 @@ if (__name__ == '__main__'):
         print('1: use spectograms')
         print('2: use timeseries')
     else:
-        input = int(sys.argv[1])
-        if input ==1:
-            if 'project_spect_data_pickle' not in pickles and 'project_spect_labels_pickle' not in pickles:
-                print('Running read_data')
-                labels_dict        = gen_labels()
-                data, labels_list  = read_data(paths[0], labels_dict)
-            else:
-                print('Reading pickle files')
-                data        = pickle.load(open('project_spect_data_pickle', 'rb'))
-                labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
-
-        if input == 2:
-            if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
-                print('Running read_data')
-                labels_dict        = gen_labels()
-                data, labels_list  = read_data(paths[1], labels_dict)
-            else:
-                print('Reading pickle files')
-                data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
-                labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
-
+        input_num = int(sys.argv[1])
+        data, labels_list = preprocess_data(input_num, pickles, paths)
         run_NN(data[:NUM_TRAINING], labels_list[:NUM_TRAINING], data[NUM_TRAINING:], labels_list[NUM_TRAINING:])
