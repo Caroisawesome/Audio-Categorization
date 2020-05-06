@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from keras.datasets import imdb
 from keras.preprocessing.text import Tokenizer
 from keras.callbacks import Callback
