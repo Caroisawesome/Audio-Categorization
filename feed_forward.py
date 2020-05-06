@@ -37,8 +37,8 @@ TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 EPOCHS = 30
 BATCH_SIZE = 150
 LEARNING_RATE = 0.001
-MOMENTUM = 0.9
-DECAY = 1e-6
+MOMENTUM = 0.8
+DECAY = 0.1
 NESTEROV = True
 LOSS_FUNCTION = 'categorical_crossentropy'  
 
@@ -279,7 +279,7 @@ def get_picklefiles():
                 print(base)
     return pickles
 
-
+# (EPOCHS, BATCH_SIZE, LEARNING_RATE, MOMENTUM, DECAY, NESTEROV, LOSS_FUNCTION )
 def run_NN(train_data, train_labels, test_data, test_labels):
     network        = initialize_network()
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
