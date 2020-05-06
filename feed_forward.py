@@ -14,6 +14,7 @@ from PIL import Image
 #import imutils
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from scikitplot.metrics import plot_confusion_matrix, plot_roc
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
@@ -26,7 +27,7 @@ import neptune
 
 # Dimensions of data being passed into network
 DIM_ROWS = 277 # max 277
-DIM_COLS = 300 # max 372
+DIM_COLS = 100 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
@@ -63,10 +64,13 @@ class NeptuneLoggerCallback(Callback):
         y_true = self.validation_data[1]
 
         y_pred_class = np.argmax(y_pred, axis=1)
+        y_true_class = np.argmax(y_true, axis=1)
 
         fig, ax = plt.subplots(figsize=(16, 12))
-        plot_confusion_matrix(y_true, y_pred_class, ax=ax)
+
+        plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
         neptune.log_image('confusion_matrix', fig)
+        print("done with confusion matrix")
 
         fig, ax = plt.subplots(figsize=(16, 12))
         plot_roc(y_true, y_pred, ax=ax)
@@ -198,7 +202,7 @@ def initialize_network():
     print('====================================================================')
     network = models.Sequential()
     network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS]))
-    network.add(Dense(1000, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
+    network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
     #network.add(Dense(1000, init='uniform', activation='relu'))
     network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
     network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
