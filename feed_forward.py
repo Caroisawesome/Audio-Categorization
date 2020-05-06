@@ -279,6 +279,15 @@ def get_picklefiles():
                 print(base)
     return pickles
 
+
+def run_NN(train_data, train_labels, test_data, test_labels):
+    network        = initialize_network()
+    t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
+    loss, accuracy = evaluate_network(test_labels, test_data, t_network)
+    print("loss", loss)
+    print("accuracy", accuracy)
+
+
 if (__name__ == '__main__'):
     paths       = ['project_spect/train/', 'project_timeseries/train/']
     pickles     = get_picklefiles()
@@ -292,7 +301,7 @@ if (__name__ == '__main__'):
         print('2: use timeseries')
     else:
         input = int(sys.argv[1])
-        if input == 1:
+        if input ==1:
             if 'project_spect_data_pickle' not in pickles and 'project_spect_labels_pickle' not in pickles:
                 print('Running read_data')
                 labels_dict        = gen_labels()
@@ -301,7 +310,7 @@ if (__name__ == '__main__'):
                 print('Reading pickle files')
                 data        = pickle.load(open('project_spect_data_pickle', 'rb'))
                 labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
-            
+
         if input == 2:
             if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
                 print('Running read_data')
@@ -311,14 +320,5 @@ if (__name__ == '__main__'):
                 print('Reading pickle files')
                 data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
                 labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
-                
-        print('Initializing Network')
-        network        = initialize_network()
-        t_network      = train_network(labels_list[:NUM_TRAINING], data[:NUM_TRAINING], labels_list[NUM_TRAINING:], data[NUM_TRAINING:], network)
-        loss, accuracy = evaluate_network(labels_list[NUM_TRAINING:], data[NUM_TRAINING:], t_network)
-        print("loss", loss)
-        print("accuracy", accuracy)
 
-
-
-
+        run_NN(data[:NUM_TRAINING], labels_list[:NUM_TRAINING], data[NUM_TRAINING:], labels_list[NUM_TRAINING:])
