@@ -21,7 +21,7 @@ import pickle
 import os
 import sys
 import csv
-import neptune
+#import neptune
 
 # Dimensions of data being passed into network
 DIM_ROWS = 277 # max 277
@@ -41,8 +41,8 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 # Number of training data (remainder of data will go to testing)
 NUM_TRAINING = 2000
 
-neptune.init('carolyna/Audio-Categorization')
-neptune.create_experiment(name='test-experiment')
+#neptune.init('carolyna/Audio-Categorization')
+#neptune.create_experiment(name='test-experiment')
 
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
@@ -194,10 +194,12 @@ def train_network(train_labels, train_data, network):
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
-    neptune_logger=NeptuneLoggerCallback(model=network,
-                                         validation_data=train_labels)
+    #neptune_logger=NeptuneLoggerCallback(model=network,
+    #                                     validation_data=train_labels)
+    #network.fit(train_data, train_labels, epochs=EPOCHS,
+    #            batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
     network.fit(train_data, train_labels, epochs=EPOCHS,
-                batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
+                batch_size=BATCH_SIZE, verbose=1)
     print('Feed forward network trained')
     print('====================================================================')
     return network
