@@ -1,5 +1,6 @@
 from keras.datasets import imdb
 from keras.preprocessing.text import Tokenizer
+from keras.callbacks import Callback
 from keras import models
 from keras import layers
 from keras.optimizers import SGD
@@ -21,18 +22,18 @@ import pickle
 import os
 import sys
 import csv
-#import neptune
+import neptune
 
 # Dimensions of data being passed into network
 DIM_ROWS = 277 # max 277
-DIM_COLS = 372 # max 372
+DIM_COLS = 300 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
 # NN Parameters
 EPOCHS = 50
-BATCH_SIZE = 100
-LEARNING_RATE = 0.01
+BATCH_SIZE = 150
+LEARNING_RATE = 0.001
 MOMENTUM = 0.9
 DECAY = 1e-6
 NESTEROV = True
@@ -41,8 +42,36 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 # Number of training data (remainder of data will go to testing)
 NUM_TRAINING = 2000
 
-#neptune.init('carolyna/Audio-Categorization')
-#neptune.create_experiment(name='test-experiment')
+neptune.init('carolyna/Audio-Categorization')
+neptune.create_experiment(name='test-experiment')
+
+class NeptuneLoggerCallback(Callback):
+    def __init__(self, model, validation_data):
+        super().__init__()
+        self.model = model
+        self.validation_data = validation_data
+
+    def on_batch_end(self, batch, logs={}):
+        for log_name, log_value in logs.items():
+            neptune.log_metric(f'batch_{log_name}', log_value)
+
+    def on_epoch_end(self, epoch, logs={}):
+        for log_name, log_value in logs.items():
+            neptune.log_metric(f'epoch_{log_name}', log_value)
+
+        y_pred = np.asarray(self.model.predict(self.validation_data[0]))
+        y_true = self.validation_data[1]
+
+        y_pred_class = np.argmax(y_pred, axis=1)
+
+        fig, ax = plt.subplots(figsize=(16, 12))
+        plot_confusion_matrix(y_true, y_pred_class, ax=ax)
+        neptune.log_image('confusion_matrix', fig)
+
+        fig, ax = plt.subplots(figsize=(16, 12))
+        plot_roc(y_true, y_pred, ax=ax)
+        neptune.log_image('roc_curve', fig)
+
 
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 """
@@ -170,9 +199,9 @@ def initialize_network():
     network = models.Sequential()
     network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS]))
     network.add(Dense(1000, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
-    network.add(Dense(100, init='uniform', activation='relu'))
+    #network.add(Dense(1000, init='uniform', activation='relu'))
+    network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
     network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
-    #network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
     network.add(Dense(6, activation='softmax'))
     print('Feed forward network initialized')
     print('====================================================================')
@@ -194,12 +223,12 @@ def train_network(train_labels, train_data, network):
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
-    #neptune_logger=NeptuneLoggerCallback(model=network,
-    #                                     validation_data=train_labels)
-    #network.fit(train_data, train_labels, epochs=EPOCHS,
-    #            batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
+    neptune_logger=NeptuneLoggerCallback(model=network,
+                                         validation_data=train_labels)
     network.fit(train_data, train_labels, epochs=EPOCHS,
-                batch_size=BATCH_SIZE, verbose=1)
+                batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
+    #network.fit(train_data, train_labels, epochs=EPOCHS,
+    #            batch_size=BATCH_SIZE, verbose=1)
     print('Feed forward network trained')
     print('====================================================================')
     return network
