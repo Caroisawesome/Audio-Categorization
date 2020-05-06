@@ -185,9 +185,9 @@ def read_data(directory, labels):
         #print(data[i])
 
     labels_l = to_categorical(labels_l)
-    print('Writing pickle data')
+    #print('Writing pickle data')
     #write_pickle_file(data, directory, 'data')
-    print('Writing pickle labels')
+    #print('Writing pickle labels')
     #write_pickle_file(labels_l, directory, 'labels')
     return data, labels_l
 
@@ -303,7 +303,6 @@ def preprocess_data(input_num, pickles, paths):
         if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
             print('Running read_data')
             labels_dict        = gen_labels()
-            data, labels_list  = read_data(paths[0], labels_dict)
             data, labels_list  = read_data(paths[1], labels_dict)
         else:
             print('Reading pickle files')
