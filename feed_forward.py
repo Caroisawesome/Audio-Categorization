@@ -218,14 +218,14 @@ train_network :: Using stochastic gradient descent.
 @returns: 
 ===============================================================================
 '''
-def train_network(train_labels, train_data, network):
+def train_network(train_labels, train_data, test_labels, test_data, network):
     print('Training feed forward network')
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
     neptune_logger=NeptuneLoggerCallback(model=network,
-                                         validation_data=train_labels)
-    network.fit(train_data, train_labels, epochs=EPOCHS,
+                                         validation_data=(test_data, test_labels))
+    network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
                 batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
     #network.fit(train_data, train_labels, epochs=EPOCHS,
     #            batch_size=BATCH_SIZE, verbose=1)
@@ -303,7 +303,7 @@ if (__name__ == '__main__'):
                 
         print('Initializing Network')
         network        = initialize_network()
-        t_network      = train_network(labels_list[:NUM_TRAINING], data[:NUM_TRAINING], network)
+        t_network      = train_network(labels_list[:NUM_TRAINING], data[:NUM_TRAINING], labels_list[NUM_TRAINING:], data[NUM_TRAINING:], network)
         loss, accuracy = evaluate_network(labels_list[NUM_TRAINING:], data[NUM_TRAINING:], t_network)
         print("loss", loss)
         print("accuracy", accuracy)
