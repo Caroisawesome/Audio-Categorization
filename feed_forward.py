@@ -34,7 +34,7 @@ DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
 # NN Parameters
-EPOCHS = 50
+EPOCHS = 30
 BATCH_SIZE = 150
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
@@ -45,8 +45,11 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 # Number of training data (remainder of data will go to testing)
 NUM_TRAINING = 2000
 
-neptune.init('carolyna/Audio-Categorization')
-neptune.create_experiment(name='test-experiment')
+USE_NEPTUNE = False
+
+if (USE_NEPTUNE):
+    neptune.init('carolyna/Audio-Categorization')
+    neptune.create_experiment(name='test-experiment')
 
 class NeptuneLoggerCallback(Callback):
     def __init__(self, model, validation_data):
@@ -72,11 +75,12 @@ class NeptuneLoggerCallback(Callback):
 
         plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
         neptune.log_image('confusion_matrix', fig)
+        plt.clf()
         print("done with confusion matrix")
 
-        fig, ax = plt.subplots(figsize=(16, 12))
-        plot_roc(y_true, y_pred, ax=ax)
-        neptune.log_image('roc_curve', fig)
+        #fig, ax = plt.subplots(figsize=(16, 12))
+        #plot_roc(y_true, y_pred, ax=ax)
+        #neptune.log_image('roc_curve', fig)
 
 
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
@@ -229,12 +233,13 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
-    neptune_logger=NeptuneLoggerCallback(model=network,
+    if USE_NEPTUNE:
+        neptune_logger=NeptuneLoggerCallback(model=network,
                                          validation_data=(test_data, test_labels))
-    network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
+        network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
                 batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
-    #network.fit(train_data, train_labels, epochs=EPOCHS,
-    #            batch_size=BATCH_SIZE, verbose=1)
+    else:
+        network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Feed forward network trained')
     print('====================================================================')
     return network
