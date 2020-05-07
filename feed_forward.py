@@ -29,7 +29,7 @@ import csv
 import neptune
 
 # Dimensions of data being passed into network
-DIM_ROWS = 277 # max 277
+DIM_ROWS = 234 # max 277
 DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
@@ -318,7 +318,7 @@ def preprocess_data(input_num, pickles, paths):
             data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
             labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
 
-    if input_num == 2:
+    if input_num == 3:
         DIM_ROWS = 234
         if 'project_mfccs_data_pickle' not in pickles and 'project_mfccs_labels_pickle' not in pickles:
             print('Running read_data')
@@ -332,7 +332,7 @@ def preprocess_data(input_num, pickles, paths):
     return data, labels_list
 
 if (__name__ == '__main__'):
-    paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs/train']
+    paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs']
     pickles     = get_picklefiles()
     data        = []
     labels_list = []
