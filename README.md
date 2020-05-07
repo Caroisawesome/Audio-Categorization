@@ -18,31 +18,31 @@ Once the data has been processed and converted into images, the images can be mo
 
 Run `python3 util.py 0 {0: training, 1: testing}`.
 
-This command will read mp3 files from `data/project3/{train/test}` and will write wav files to `data/project_waves/{train/test}`.
+This command will read mp3 files from `data/project3/{train|test}` and will write wav files to `data/project_waves/{train|test}`.
 
 #### Normalize wav files
 
 Run `python3 util.py 1 {0: training, 1: testing}`.
 
-This command will read wav files from `data/project_waves/{train/test}` and will write normalized wav files to `data/project_waves_norm/{train/test}`.
+This command will read wav files from `data/project_waves/{train|test}` and will write normalized wav files to `data/project_waves_norm/{train|test}`.
 
 #### Convert wav to Spectrogram Image
 
 Run `python3 util.py 2 {0: training, 1: testing}`.
 
-This command will read normalized wav files from  `data/project_waves_norm/{train/test}` and will write spectrogram images to  `data/project_spect/{train/test}`.
+This command will read normalized wav files from  `data/project_waves_norm/{train|test}` and will write spectrogram images to  `data/project_spect/{train|test}`.
 
 #### Convert wav to Timeseries Image
 
 Run `python3 util.py 3 {0: training, 1: testing}`.
 
-This command will read normalized wav files from  `data/project_waves_norm/{train/test}` and will write timeseries images to  `data/project_timeseries/{train/test}`.
+This command will read normalized wav files from  `data/project_waves_norm/{train|test}` and will write timeseries images to  `data/project_timeseries/{train|test}`.
 
 #### Convert wav to MFCC Image
 
 Run `python3 util.py 4 {0: training, 1: testing}`.
 
-This command will read normalized wav files from `data/project_waves_norm/{train/test}` and will write MFCC images to `data/project_mfccs/{train/test}`.
+This command will read normalized wav files from `data/project_waves_norm/{train|test}` and will write MFCC images to `data/project_mfccs/{train|test}`.
 
 
 ## Convolutional Neural Network
