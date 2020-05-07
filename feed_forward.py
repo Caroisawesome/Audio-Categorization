@@ -45,7 +45,7 @@ NESTEROV = True
 LOSS_FUNCTION = 'categorical_crossentropy'
 
 # Number of training data (remainder of data will go to testing)
-NUM_TRAINING = 2000
+NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
 USE_NEPTUNE = True
@@ -307,7 +307,7 @@ def preprocess_data(input_num, pickles, paths):
             print('reading pickle files')
             data        = pickle.load(open('project_spect_data_pickle', 'rb'))
             labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
-    
+
     if input_num == 2:
         if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
             print('Running read_data')
@@ -317,10 +317,22 @@ def preprocess_data(input_num, pickles, paths):
             print('Reading pickle files')
             data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
             labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
+
+    if input_num == 2:
+        DIM_ROWS = 234
+        if 'project_mfccs_data_pickle' not in pickles and 'project_mfccs_labels_pickle' not in pickles:
+            print('Running read_data')
+            labels_dict        = gen_labels()
+            data, labels_list  = read_data(paths[2], labels_dict)
+        else:
+            print('Reading pickle files')
+            data        = pickle.load(open('project_mfccs_data_pickle', 'rb'))
+            labels_list = pickle.load(open('project_mfccs_labels_pickle', 'rb'))
+
     return data, labels_list
 
 if (__name__ == '__main__'):
-    paths       = ['project_spect/train/', 'project_timeseries/train/']
+    paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs/train']
     pickles     = get_picklefiles()
     data        = []
     labels_list = []
@@ -329,6 +341,7 @@ if (__name__ == '__main__'):
         print('Argument required:')
         print('1: use spectograms')
         print('2: use timeseries')
+        print('3: use MFCCs')
     else:
         input_num = int(sys.argv[1])
         data, labels_list = preprocess_data(input_num, pickles, paths)
