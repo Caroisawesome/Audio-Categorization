@@ -190,38 +190,58 @@ def generate_time_series_png(in_path, out_path):
 
 if (__name__ == '__main__'):
 
-    path_train_mp3 = 'data/project3/train/'
-    path_train_wav_norm = 'data/project_waves_norm/train/'
-    path_train_wav ='data/project_waves/train/'
-    path_train_spect ='data/project_spect/train/'
-    out_path_timeseries = 'data/project_timeseries/train/'
+    paths = [
+        'data/project3/',
+        'data/project_waves/',
+        'data/project_waves_norm/',
+        'data/project_spect/',
+        'data/project_timeseries/',
+        'data/project_mfccs/'
+    ]
 
-    if len(sys.argv) < 2:
+    data_use = [ "train/", "test/" ]
+
+    if len(sys.argv) < 3:
         print("Argument required:")
-        print("1: generate wav from mp3")
-        print("2: normalize data")
-        print("3: generate spectogram charts")
-        print("4: generate time series charts")
-        print("5: generate mfcc charts")
-        print("6: build genre spectogram overlays")
+        print("Run python3 util.py {action} {data_use}")
+        print("Actions:")
+        print("0: generate wav from mp3")
+        print("1: normalize data")
+        print("2: generate spectogram charts")
+        print("3: generate time series charts")
+        print("4: generate mfcc charts")
+        print("Data_use:")
+        print("0: use training data")
+        print("1: use testing data")
     else:
-        input = int(sys.argv[1])
+        action = int(sys.argv[1])
+        use = int(sys.argv[2])
 
-        if input == 1:
-            make_dirs(path_train_wav)
-            generate_wav_from_mp3(path_train_mp3,path_train_wav)
-        elif input == 2:
-            normalization.normalize_wav_data()
-        elif input == 3:
-            make_dirs(path_train_spect)
-            generate_spects_from_wav(path_train_wav_norm, path_train_spect)
-        elif input == 4:
-            make_dirs(out_path_timeseries)
-            generate_time_series_png(path_train_wav_norm, out_path_timeseries)
-        elif input == 5:
-            p3_mfcc.getMFCCs()
-        elif input == 6:
-            generate_wav_to_spect_overlay_genres()
+        if action == 0:
+            in_path = paths[0]+data_use[use]
+            out_path = paths[1]+data_use[use]
+            make_dirs(out_path)
+            generate_wav_from_mp3(in_path,out_path)
+        elif action == 1:
+            in_path = paths[1]+data_use[use]
+            out_path = paths[2]+data_use[use]
+            make_dirs(out_path)
+            normalization.normalize_wav_data(in_path, out_path)
+        elif action == 2:
+            in_path = paths[2]+data_use[use]
+            out_path = paths[3]+data_use[use]
+            make_dirs(out_path)
+            generate_spects_from_wav(in_path, out_path)
+        elif action == 3:
+            in_path = paths[2]+data_use[use]
+            out_path = paths[4]+data_use[use]
+            make_dirs(out_path)
+            generate_time_series_png(in_path, out_path)
+        elif action == 4:
+            in_path = paths[2]+data_use[use]
+            out_path = paths[5]+data_use[use]
+            make_dirs(out_path)
+            p3_mfcc.getMFCCs(in_path, out_path)
         else:
             print("could not understand input. try again.")
 
