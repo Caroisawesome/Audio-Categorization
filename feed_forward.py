@@ -39,8 +39,8 @@ TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 EPOCHS = 30
 BATCH_SIZE = 150
 LEARNING_RATE = 0.001
-MOMENTUM = 0.8
-DECAY = 0.1
+MOMENTUM = 0.9
+DECAY = 1e-6
 NESTEROV = True
 LOSS_FUNCTION = 'categorical_crossentropy'
 
@@ -212,16 +212,16 @@ def initialize_network():
     print('====================================================================')
     network = models.Sequential()
     network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS ]))
-    network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='tanh'))
+    network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
     #network.add(Dense(256, activation='relu', kernel_initializer='uniform'))
-    network.add(Dense(200, kernel_initializer='uniform'))
-    network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
-    network.add(Dense(50, activation='tanh', kernel_initializer='uniform'))
-    #network.add(Dense(50, activation='relu', kernel_initializer='uniform'))
+    network.add(Dense(200, activation='relu', kernel_initializer='uniform'))
+    #network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
+    #network.add(Dense(50, activation='tanh', kernel_initializer='uniform'))
+    network.add(Dense(50, activation='relu', kernel_initializer='uniform'))
     #network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
     #network.add(Dense(20, activation='tanh', kernel_initializer='uniform'))
-    network.add(Dense(10, kernel_initializer='uniform'))
-    network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
+    network.add(Dense(10, activation='relu', kernel_initializer='uniform'))
+    #network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
     network.add(Dense(6, activation='softmax'))
     print('Feed forward network initialized')
     print('====================================================================')
