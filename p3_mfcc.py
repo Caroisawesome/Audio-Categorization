@@ -45,7 +45,7 @@ def getMFCCs():
             yy = np.arange(0,mfccs.data.shape[0]+1,1)
             librosa.display.specshow(mfccs,x_coords=xx, y_coords=yy)
             out_path = out+str(i[0])+'.png'
-            plt.savefig(out_path)
+            plt.savefig(out_path,bbox_inches='tight',pad_inches=0, dpi=75 )
             plt.close()
         except:
             print(i)
