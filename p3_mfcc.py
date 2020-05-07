@@ -21,19 +21,14 @@ import numpy as np
 @returns:
 ===============================================================================
 '''
-def getMFCCs():
-    try:
-        os.makedirs("data/project_mfccs/")
-    except FileExistsError:
-        # directory already exists
-        pass
-    out = "data/project_mfccs/"
+def getMFCCs(in_path, out):
     with open('data/project3/train.csv') as file:
         data = csv.reader(file)
         files = list(data)
     files.remove(files[0])
     for i in files:
-        path = './data/project_waves_norm/train/'+str(i[0])+'.wav'
+        #path = './data/project_waves_norm/train/'+str(i[0])+'.wav'
+        path = in_path +str(i[0])+'.wav'
         print(path)
         try:
             plt.ylim(0, 5000)
@@ -144,4 +139,11 @@ if __name__ == '__main__':
         make_graphs()
 
     if gen_all_graphs:
-        getMFCCs()
+        try:
+            os.makedirs("data/project_mfccs/")
+        except FileExistsError:
+            # directory already exists
+            pass
+        out = "data/project_mfccs/"
+        in_path = './data/project_waves_norm/train/'
+        getMFCCs(in_path,out)
