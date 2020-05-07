@@ -10,7 +10,7 @@ The mp3 files used for this project are stored in a directory `data/project3/tra
 2. Normalize wav files
 3. Convert wav to image (Spectrogram, Timeseries, or MFCC)
 
-Once the data has been processed and converted into images, the images can be moved to `project_spect` and `project_timeseries` in order to be read in by the neural networks.
+Once the data has been processed and converted into images, the images can be moved to `project_spect`, `project_timeseries`, `project_mfccs` in order to be read in by the neural networks.
 
 #### Convert mp3 to wav files
 
@@ -38,7 +38,9 @@ This command will read normalized wav files from  `data/project_waves_norm/train
 
 #### Convert wav to MFCC Image
 
-Run `python3 util.py 5`
+Run `python3 util.py 5`.
+
+This command will read normalized wav files from `data/project_waves_norm/train` and will write MFCC images to `data/project_mfccs`.
 
 
 ## Convolutional Neural Network
