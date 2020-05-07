@@ -10,6 +10,7 @@ from keras.utils import np_utils
 from keras.utils import to_categorical
 from keras.layers import Dense
 from keras.layers import Activation
+from keras.layers import LeakyReLU
 import tensorflow as tf
 from PIL import Image
 #from imutils import paths
@@ -29,23 +30,24 @@ import neptune
 
 # Dimensions of data being passed into network
 DIM_ROWS = 277 # max 277
-DIM_COLS = 100 # max 372
+DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
 # NN Parameters
-EPOCHS = 30
-BATCH_SIZE = 150
-LEARNING_RATE = 0.001
+EPOCHS = 50
+BATCH_SIZE = 100
+LEARNING_RATE = 0.0001
 MOMENTUM = 0.9
-DECAY = 1e-6
+DECAY = 1e-7
 NESTEROV = True
 LOSS_FUNCTION = 'categorical_crossentropy'  
 
 # Number of training data (remainder of data will go to testing)
 NUM_TRAINING = 2000
+LEAKY_RELU_ALPHA = 0.01
 
-USE_NEPTUNE = False
+USE_NEPTUNE = True
 
 if (USE_NEPTUNE):
     neptune.init('carolyna/Audio-Categorization')
@@ -75,8 +77,9 @@ class NeptuneLoggerCallback(Callback):
 
         plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
         neptune.log_image('confusion_matrix', fig)
-        plt.clf()
-        print("done with confusion matrix")
+        #plt.clf()
+        plt.close()
+        #print("done with confusion matrix")
 
         #fig, ax = plt.subplots(figsize=(16, 12))
         #plot_roc(y_true, y_pred, ax=ax)
@@ -207,15 +210,20 @@ def initialize_network():
     print('Initializing feed forward network')
     print('====================================================================')
     network = models.Sequential()
-    network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS]))
-    network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
-    #network.add(Dense(1000, init='uniform', activation='relu'))
-    network.add(Dense(100,  activation='relu', kernel_initializer='uniform'))
-    network.add(Dense(10,  activation='relu', kernel_initializer='uniform'))
+    network.add(layers.Flatten(input_shape=[ DIM_ROWS, DIM_COLS, DIM_CHANNELS ]))
+    network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='tanh'))
+    #network.add(Dense(256, activation='relu', kernel_initializer='uniform'))
+    network.add(Dense(200, kernel_initializer='uniform'))
+    network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
+    network.add(Dense(50, activation='tanh', kernel_initializer='uniform'))
+    #network.add(Dense(50, activation='relu', kernel_initializer='uniform'))
+    #network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
+    #network.add(Dense(20, activation='tanh', kernel_initializer='uniform'))
+    network.add(Dense(10, kernel_initializer='uniform'))
+    network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
     network.add(Dense(6, activation='softmax'))
     print('Feed forward network initialized')
     print('====================================================================')
-    #network.add(Activation('softmax'))
     return network
 
 ''' 
@@ -313,7 +321,6 @@ def preprocess_data(input_num, pickles, paths):
 if (__name__ == '__main__'):
     paths       = ['project_spect/train/', 'project_timeseries/train/']
     pickles     = get_picklefiles()
-    labels_dict = []
     data        = []
     labels_list = []
 
