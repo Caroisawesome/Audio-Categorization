@@ -8,6 +8,7 @@ import os
 import csv
 import sys
 import normalization
+import p3_mfcc
 import librosa.display
 
 IMG_DPI=75
@@ -186,17 +187,6 @@ def generate_time_series_png(in_path, out_path):
             plt.savefig(out,bbox_inches='tight',pad_inches = 0, dpi=IMG_DPI)
             plt.clf()
 
-'''
-===============================================================================
-generate_mfcc_png
-@params:
-
-@returns:
-===============================================================================
-'''
-def generate_mfcc_png():
-    print("NOT IMPLEMENTED")
-    return 0
 
 if (__name__ == '__main__'):
 
@@ -229,7 +219,7 @@ if (__name__ == '__main__'):
             make_dirs(out_path_timeseries)
             generate_time_series_png(path_train_wav_norm, out_path_timeseries)
         elif input == 5:
-            generate_mfcc_png()
+            p3_mfcc.getMFCCs()
         elif input == 6:
             generate_wav_to_spect_overlay_genres()
         else:
