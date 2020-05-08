@@ -186,7 +186,7 @@ def read_data(directory, labels):
         np_image = np.array(image)[:DIM_ROWS, :DIM_COLS, :DIM_CHANNELS]
         data[i] = np_image#.flatten() #image_to_feature_vector(image)
         labels_l.append(labels[names[i]])
-        #print(data[i])
+        #print(data[i]) 
 
     labels_l = to_categorical(labels_l)
     #print('Writing pickle data')
@@ -288,11 +288,16 @@ def get_picklefiles():
                 print(base)
     return pickles
 
+
+def save_model(network):
+    pickle.dump(network, open('feed_forward_model.p', 'wb'))
+
 # (EPOCHS, BATCH_SIZE, LEARNING_RATE, MOMENTUM, DECAY, NESTEROV, LOSS_FUNCTION )
 def run_NN(train_data, train_labels, test_data, test_labels):
     network        = initialize_network()
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
+    save_model(t_network)
     print("loss", loss)
     print("accuracy", accuracy)
 
