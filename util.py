@@ -241,7 +241,7 @@ if (__name__ == '__main__'):
             in_path = paths[2]+data_use[use]
             out_path = paths[5]+data_use[use]
             make_dirs(out_path)
-            p3_mfcc.getMFCCs(in_path, out_path)
+            p3_mfcc.getMFCCs(in_path, out_path, use)
         else:
             print("could not understand input. try again.")
 
