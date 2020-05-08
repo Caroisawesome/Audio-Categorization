@@ -51,4 +51,4 @@ TODO:
 
 ## Feed Forward Neural Network
 
-TODO:
+Run `python3 feed-forward.py {1: Spectrogram, 2: Timeseries, 3: MFCC}`. 
