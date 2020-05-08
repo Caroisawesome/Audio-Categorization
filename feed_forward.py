@@ -337,7 +337,7 @@ def preprocess_data(input_num, pickles, paths):
     return data, labels_list
 
 if (__name__ == '__main__'):
-    paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs']
+    paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs/train/']
     pickles     = get_picklefiles()
     data        = []
     labels_list = []
