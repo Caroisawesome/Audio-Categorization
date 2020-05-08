@@ -21,8 +21,12 @@ import numpy as np
 @returns:
 ===============================================================================
 '''
-def getMFCCs(in_path, out):
-    with open('data/project3/train.csv') as file:
+def getMFCCs(in_path, out, type_of_data):
+    if type_of_data == 0:
+        csv_path = 'data/project3/train.csv'
+    if type_of_data == 1:
+        csv_path = 'data/project3/test_idx.csv'
+    with open(csv_path) as file:
         data = csv.reader(file)
         files = list(data)
     files.remove(files[0])
@@ -146,4 +150,4 @@ if __name__ == '__main__':
             pass
         out = "data/project_mfccs/"
         in_path = './data/project_waves_norm/train/'
-        getMFCCs(in_path,out)
+        getMFCCs(in_path,out, 0)
