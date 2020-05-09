@@ -247,7 +247,7 @@ if __name__ == '__main__':
     # train the network
     print("[INFO] training network for {} epochs...".format(EPOCHS))
     H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BATCH_SIZE),
-    	validation_data=(testX, testY), steps_per_epoch=len(trainX) // BATCH_SIZE,
+    	validation_data=(testX, testY), steps_per_epoch=(len(trainX) / BATCH_SIZE),
     	epochs=EPOCHS)
     
     
