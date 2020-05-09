@@ -27,6 +27,7 @@ import os
 import sys
 import csv
 import neptune
+import math
 
 # Dimensions of data being passed into network
 DIM_ROWS = 234 # max 277
@@ -299,10 +300,10 @@ def run_NN(train_data, train_labels, test_data, test_labels):
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
     save_model(t_network)
     acc = accuracy * .01
-    interval = 1.96 * sqrt( (acc * (1 - acc)) / NUM_TRAINING)
+    interval = 1.96 * math.sqrt( (acc * (1 - acc)) / NUM_TRAINING)
     print("loss", loss)
     print("accuracy", accuracy)
-    print("confidence interval": interval)
+    print("confidence interval:", interval)
 
 
 def preprocess_data(input_num, pickles, paths):
