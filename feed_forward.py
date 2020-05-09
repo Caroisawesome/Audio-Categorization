@@ -213,7 +213,7 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     return network
 
-''' 
+'''
 ===============================================================================
 
 evaluate_network ::
@@ -228,6 +228,18 @@ def evaluate_network(test_labels, test_data, network):
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
+'''
+===============================================================================
+
+save_model :: Saves a trained keras model in a pickle file
+
+@params: network - Keras Model - trained keras model to serialize and save
+         model_type - int - representing model type
+                          - 0: CNN, 1: FFNN
+
+@returns: void
+===============================================================================
+'''
 def save_model(network, model_type):
     if (model_type == 0):
         pickle.dump(network, open('CNN_model.p', 'wb'))
@@ -237,8 +249,16 @@ def save_model(network, model_type):
         print("unrecongized model_type")
         print("0: CNN, 1: FFNN")
 
+'''
+===============================================================================
 
-# (EPOCHS, BATCH_SIZE, LEARNING_RATE, MOMENTUM, DECAY, NESTEROV, LOSS_FUNCTION )
+run_NN ::
+
+@params:
+
+@returns: 
+===============================================================================
+'''
 def run_NN(train_data, train_labels, test_data, test_labels):
     network        = initialize_network()
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
