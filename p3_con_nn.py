@@ -35,8 +35,8 @@ import pickle
 import os
 import csv
 
-DIM_ROWS = 234 # max 277
-DIM_COLS = 200 # max 372
+DIM_ROWS = 100 # max 277
+DIM_COLS = 96 # max 372
 DIM_CHANNELS = 3 # max 3
 
 EPOCHS = 30
