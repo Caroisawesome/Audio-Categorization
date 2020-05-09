@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-from p3_audiocategorization.feed_forward import FF_NN
+from audio_categorization.feed_forward import FF_NN
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
