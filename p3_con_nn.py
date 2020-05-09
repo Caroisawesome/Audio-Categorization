@@ -26,11 +26,18 @@ from keras.layers.core import Flatten
 from keras.layers.core import Dropout
 from keras.layers.core import Dense
 from keras import backend as K
+from keras.utils import to_categorical
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg 
 import numpy as np
+import pickle
+import os
+import csv
 
 
-
+DIM_ROWS = 234 # max 277
+DIM_COLS = 200 # max 372
+DIM_CHANNELS = 3 # max 3
 
 EPOCHS = 30
 BATCH_SIZE = 150
@@ -112,6 +119,59 @@ class StridedNet:
 
 		# return the constructed network architecture
 		return model     
+def gen_labels():
+    labels   = {}
+    #genres   = [0, 1, 2, 3, 4, 5]
+
+    with open('data/project3/train.csv', 'r') as csvfile:
+        #reader = csv.reader(csvfile)
+        tmp = list(list(rec) for rec in csv.reader(csvfile, delimiter=','))
+        for row in tmp:
+            if row[0] == 'new_id':
+                continue
+            labels[row[0]] = row[1]
+    #print(labels)
+    return labels
+    #for g in genres:
+def read_data(directory, labels):
+    t_files  = []
+    names    = []
+    data     = []
+    labels_l = []
+    print('Walking data directory')
+    print('====================================================================')
+    for root, dirs, files in os.walk(directory, topdown=False):
+        for name in files:
+            t_files.append(os.path.join(root, name))
+            base = os.path.splitext(name)[0]
+            names.append(base)
+            #print(os.path.join(root, name))
+            #print(base)
+
+    print('Reading images')
+    print('====================================================================')
+    data     = np.zeros((len(t_files),DIM_ROWS,DIM_COLS,DIM_CHANNELS))
+    for i in range(0, len(t_files)):
+        image = mpimg.imread(t_files[i])
+        np_image = np.array(image)[:DIM_ROWS, :DIM_COLS, :DIM_CHANNELS]
+        data[i] = np_image#.flatten() #image_to_feature_vector(image)
+        labels_l.append(labels[names[i]])
+        #print(data[i]) 
+
+    labels_l = to_categorical(labels_l)
+    #print('Writing pickle data')
+    #write_pickle_file(data, directory, 'data')
+    #print('Writing pickle labels')
+    #write_pickle_file(labels_l, directory, 'labels')
+    return data, labels_l
+def save_model(network, model_type):
+    if (model_type == 0):
+        pickle.dump(network, open('CNN_model.p', 'wb'))
+    elif (model_type == 1):
+        pickle.dump(network, open('feed_forward_model.p', 'wb'))
+    else:
+        print("unrecongized model_type")
+        print("0: CNN, 1: FFNN")
 
 '''
 ===============================================================================
