@@ -10,14 +10,15 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-
-
+from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.regularizers import l2
+from keras.callbacks import Callback
 # import the necessary packages
+from scikitplot.metrics import plot_confusion_matrix
 from keras.models import Sequential
 from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Conv2D
@@ -33,8 +34,10 @@ import numpy as np
 import pickle
 import os
 import csv
+import neptune
 
 
+USE_NEPTUNE = True
 DIM_ROWS = 234 # max 277
 DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
@@ -51,6 +54,39 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
+
+if (USE_NEPTUNE):
+    neptune.init('carolyna/Audio-Categorization')
+    neptune.create_experiment(name='test-experiment')
+
+class NeptuneLoggerCallback(Callback):
+    def __init__(self, model, validation_data):
+        super().__init__()
+        self.model = model
+        self.validation_data = validation_data
+
+    def on_batch_end(self, batch, logs={}):
+        for log_name, log_value in logs.items():
+            neptune.log_metric(f'batch_{log_name}', log_value)
+
+    def on_epoch_end(self, epoch, logs={}):
+        for log_name, log_value in logs.items():
+            neptune.log_metric(f'epoch_{log_name}', log_value)
+
+        y_pred = np.asarray(self.model.predict(self.validation_data[0]))
+        y_true = self.validation_data[1]
+
+        y_pred_class = np.argmax(y_pred, axis=1)
+        y_true_class = np.argmax(y_true, axis=1)
+
+        fig, ax = plt.subplots(figsize=(16, 12))
+
+        plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
+        neptune.log_image('confusion_matrix', fig)
+        plt.close()
+        
+        
+        
 class StridedNet:
     @staticmethod
     def build(width, height, depth, classes, reg, init="glorot_uniform"):
@@ -187,6 +223,47 @@ def save_model(network, model_type):
         print("unrecongized model_type")
         print("0: CNN, 1: FFNN")
 
+
+''' 
+===============================================================================
+
+train_network :: Using stochastic gradient descent.
+
+@params:
+
+@returns: 
+===============================================================================
+'''
+def train_network(train_labels, train_data, test_labels, test_data, network):
+    print('Training feed forward network')
+    print('====================================================================')
+    sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
+    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
+    if USE_NEPTUNE:
+        neptune_logger=NeptuneLoggerCallback(model=network,
+                                         validation_data=(test_data, test_labels))
+        network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
+                batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
+    else:
+        network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
+    print('Feed forward network trained')
+    print('====================================================================')
+    return network
+
+'''
+===============================================================================
+
+evaluate_network ::
+
+@params:
+
+@returns: 
+===============================================================================
+'''
+def evaluate_network(test_labels, test_data, network):
+    (loss, accuracy) = network.evaluate(test_data, test_labels, batch_size=BATCH_SIZE, verbose=1)
+    print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
+    return loss, accuracy
 '''
 ===============================================================================
 Start of our program
@@ -239,7 +316,7 @@ if __name__ == '__main__':
     
     # partition the data into training and testing splits using 75% of
     # the data for training and the remaining 25% for testing
-    (trainX, testX, trainY, testY) = train_test_split(data, labels_l,
+    (train_data, test_data, train_labels, test_labels) = train_test_split(data, labels_l,
     	test_size=0.20, stratify=labels_l, random_state=42)
     
     
@@ -258,6 +335,7 @@ if __name__ == '__main__':
     model.compile(loss=LOSS_FUNCTION, optimizer=opt,
     	metrics=["accuracy"])
     
+    '''
     # train the network
     print("[INFO] training network for {} epochs...".format(EPOCHS))
     H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BATCH_SIZE),
@@ -270,17 +348,20 @@ if __name__ == '__main__':
     predictions = model.predict(testX, batch_size=BATCH_SIZE)
     print(classification_report(testY.argmax(axis=1),
     predictions.argmax(axis=1), target_names=labels_l))
+    '''
     
-    save_model(H, 0)
+    t_network      = train_network(train_labels, train_data, test_labels, test_data, model)
+    loss, accuracy = evaluate_network(test_labels, test_data, t_network)
+    save_model(t_network, 0)
     
     # plot the training loss and accuracy
     N = EPOCHS
     plt.style.use("ggplot")
     plt.figure()
-    plt.plot(np.arange(0, N), H.history["loss"], label="train_loss")
-    plt.plot(np.arange(0, N), H.history["val_loss"], label="val_loss")
-    plt.plot(np.arange(0, N), H.history["acc"], label="train_acc")
-    plt.plot(np.arange(0, N), H.history["val_acc"], label="val_acc")
+    plt.plot(np.arange(0, N), t_network.history["loss"], label="train_loss")
+    plt.plot(np.arange(0, N), t_network.history["val_loss"], label="val_loss")
+    plt.plot(np.arange(0, N), t_network.history["acc"], label="train_acc")
+    plt.plot(np.arange(0, N), t_network.history["val_acc"], label="val_acc")
     plt.title("Training Loss and Accuracy on Dataset")
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
