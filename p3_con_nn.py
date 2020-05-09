@@ -297,7 +297,8 @@ if __name__ == '__main__':
     	classes=len(labels_l), reg=l2(0.0005))
     
     
-    
+    opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
+    model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
     
     # train the network
     print("[INFO] training network for {} epochs...".format(EPOCHS))
