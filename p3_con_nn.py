@@ -237,7 +237,7 @@ if __name__ == '__main__':
     # initialize the optimizer and model
     print("[INFO] compiling model...")
     opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
-    model = StridedNet.build(width=96, height=96, depth=3,
+    model = StridedNet.build(width=234, height=200, depth=3,
     	classes=len(labels_l), reg=l2(0.0005))
     
     
