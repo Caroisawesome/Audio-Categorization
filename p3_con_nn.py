@@ -203,10 +203,10 @@ train_network :: Using stochastic gradient descent.
 ===============================================================================
 '''
 def train_network(train_labels, train_data, test_labels, test_data, network):
-    print('Training feed forward network')
+    print('Training con NN network')
     print('====================================================================')
-    sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
-    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
+    #sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
+    #network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
     network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
