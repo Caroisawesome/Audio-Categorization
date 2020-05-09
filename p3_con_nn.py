@@ -35,8 +35,8 @@ import pickle
 import os
 import csv
 
-DIM_ROWS = 100 # max 277
-DIM_COLS = 96 # max 372
+DIM_ROWS = 234 # max 277
+DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
@@ -62,7 +62,7 @@ class StridedNet:
         # initialize the model along with the input shape to be
         # "channels last" and the channels dimension itself
         model = Sequential()
-        #inputShape = (height, width, depth)
+        inputShape = (height, width, depth)
         chanDim = -1
         print('====================================================================')
         print('Starting CNN')
@@ -70,7 +70,7 @@ class StridedNet:
 		# if we are using "channels first", update the input shape
 		# and channels dimension
         if K.image_data_format() == "channels_first":
-            #inputShape = (depth, height, width)
+            inputShape = (depth, height, width)
             chanDim = 1
             
         # our first CONV layer will learn a total of 16 filters, each
@@ -78,7 +78,7 @@ class StridedNet:
 		# the spatial dimensions of the volume
         model.add(Conv2D(16, (7, 7), strides=(1, 1), padding="same",
         kernel_initializer=init, kernel_regularizer=reg,
-        input_shape=TOTAL_INPUT_SIZE))
+        input_shape=inputShape))
         print('====================================================================')
         print('Starting CNN_32')
         print('====================================================================')
