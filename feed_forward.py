@@ -37,11 +37,11 @@ TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
 # NN Parameters
 
-EPOCHS = 200
-BATCH_SIZE = 150
-LEARNING_RATE = 0.001
-MOMENTUM = 0.9
-DECAY = 1e-6
+EPOCHS = 20
+BATCH_SIZE = 100
+LEARNING_RATE = 0.00001
+MOMENTUM = 0.5
+DECAY = 1e-7
 NESTEROV = True
 LOSS_FUNCTION = 'categorical_crossentropy'
 
@@ -175,6 +175,8 @@ def initialize_network():
     network.add(Dense(500, input_dim=TOTAL_INPUT_SIZE, init='uniform', activation='relu'))
     #network.add(Dense(256, activation='relu', kernel_initializer='uniform'))
     network.add(Dense(200, activation='relu', kernel_initializer='uniform'))
+    network.add(Dense(150, activation='tanh', kernel_initializer='uniform'))
+    network.add(Dense(100, activation='tanh', kernel_initializer='uniform'))
     #network.add(LeakyReLU(alpha=LEAKY_RELU_ALPHA))
     #network.add(Dense(50, activation='tanh', kernel_initializer='uniform'))
     network.add(Dense(50, activation='relu', kernel_initializer='uniform'))
