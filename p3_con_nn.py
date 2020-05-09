@@ -221,7 +221,7 @@ if __name__ == '__main__':
 
     labels = gen_labels()
     data,labels_l = read_data(imagePaths,labels)
-    
+    print(labels)
     
     # partition the data into training and testing splits using 75% of
     # the data for training and the remaining 25% for testing
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     # initialize the optimizer and model
     print("[INFO] compiling model...")
     opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
-    model = StridedNet.build(width=234, height=200, depth=3,
+    model = StridedNet.build(width=DIM_COLS, height=DIM_ROWS, depth=DIM_CHANNELS,
     	classes=len(labels_l), reg=l2(0.0005))
     
     
@@ -246,14 +246,14 @@ if __name__ == '__main__':
     
     # train the network
     print("[INFO] training network for {} epochs...".format(EPOCHS))
-    H = model.fit_generator(aug.flow(trainX, trainY, batch_size=32),
-    	validation_data=(testX, testY), steps_per_epoch=len(trainX) // 32,
+    H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BATCH_SIZE),
+    	validation_data=(testX, testY), steps_per_epoch=len(trainX) // BATCH_SIZE,
     	epochs=EPOCHS)
     
     
     # evaluate the network
     print("[INFO] evaluating network...")
-    predictions = model.predict(testX, batch_size=32)
+    predictions = model.predict(testX, batch_size=BATCH_SIZE)
     print(classification_report(testY.argmax(axis=1),
     predictions.argmax(axis=1), target_names=labels_l))
     
