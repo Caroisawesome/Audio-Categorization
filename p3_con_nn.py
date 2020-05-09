@@ -12,13 +12,13 @@ matplotlib.use("Agg")
 
 from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+#from sklearn.metrics import classification_report
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.regularizers import l2
 from keras.callbacks import Callback
 # import the necessary packages
-from scikitplot.metrics import plot_confusion_matrix
+#from scikitplot.metrics import plot_confusion_matrix
 from keras.models import Sequential
 from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Conv2D
@@ -37,7 +37,7 @@ import csv
 import neptune
 
 
-USE_NEPTUNE = True
+USE_NEPTUNE = False
 DIM_ROWS = 234 # max 277
 DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
@@ -73,15 +73,15 @@ class NeptuneLoggerCallback(Callback):
         for log_name, log_value in logs.items():
             neptune.log_metric(f'epoch_{log_name}', log_value)
 
-        y_pred = np.asarray(self.model.predict(self.validation_data[0]))
-        y_true = self.validation_data[1]
+        #y_pred = np.asarray(self.model.predict(self.validation_data[0]))
+        #y_true = self.validation_data[1]
 
-        y_pred_class = np.argmax(y_pred, axis=1)
-        y_true_class = np.argmax(y_true, axis=1)
+        #y_pred_class = np.argmax(y_pred, axis=1)
+        #y_true_class = np.argmax(y_true, axis=1)
 
         fig, ax = plt.subplots(figsize=(16, 12))
 
-        plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
+        #plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
         neptune.log_image('confusion_matrix', fig)
         plt.close()
         
@@ -246,7 +246,7 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
                 batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
     else:
         network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
-    print('Feed forward network trained')
+    print('Con NN trained')
     print('====================================================================')
     return network
 
