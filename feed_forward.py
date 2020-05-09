@@ -290,15 +290,22 @@ def get_picklefiles():
     return pickles
 
 
-def save_model(network):
-    pickle.dump(network, open('feed_forward_model.p', 'wb'))
+def save_model(network, model_type):
+    if (model_type == 0):
+        pickle.dump(network, open('CNN_model.p', 'wb'))
+    elif (model_type == 1):
+        pickle.dump(network, open('feed_forward_model.p', 'wb'))
+    else:
+        print("unrecongized model_type")
+        print("0: CNN, 1: FFNN")
+
 
 # (EPOCHS, BATCH_SIZE, LEARNING_RATE, MOMENTUM, DECAY, NESTEROV, LOSS_FUNCTION )
 def run_NN(train_data, train_labels, test_data, test_labels):
     network        = initialize_network()
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
-    save_model(t_network)
+    save_model(t_network,1)
     acc = accuracy * .01
     interval = 1.96 * math.sqrt( (acc * (1 - acc)) / NUM_TRAINING)
     print("loss", loss)
