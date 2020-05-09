@@ -79,13 +79,8 @@ class NeptuneLoggerCallback(Callback):
 
         plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
         neptune.log_image('confusion_matrix', fig)
-        #plt.clf()
         plt.close()
-        #print("done with confusion matrix")
 
-        #fig, ax = plt.subplots(figsize=(16, 12))
-        #plot_roc(y_true, y_pred, ax=ax)
-        #neptune.log_image('roc_curve', fig)
 
 
 #print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
@@ -120,39 +115,9 @@ def gen_labels():
             if row[0] == 'new_id':
                 continue
             labels[row[0]] = row[1]
-    #print(labels)
     return labels
-    #for g in genres:
 
-''' 
-===============================================================================
-
-Borrows from:
-https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/
-
-@params:
-
-@returns: 
-===============================================================================
 '''
-def image_to_feature_vector(image, size=(DIM_ROWS, DIM_COLS)):
-	# resize the image to a fixed size, then flatten the image into
-	# a list of raw pixel intensities
-	return np.resize(image, size).flatten()
-
-''' 
-===============================================================================
-
-@params:
-
-@returns: 
-===============================================================================
-'''
-def write_pickle_file(data, directory, type_r):
-    filename = directory.split('/')[0] + '_' + type_r + '_pickle'
-    pickle.dump(data, open(filename, 'wb'))
-
-''' 
 ===============================================================================
 
 read_data :: Read image data and store as numpy array
@@ -176,8 +141,6 @@ def read_data(directory, labels):
             t_files.append(os.path.join(root, name))
             base = os.path.splitext(name)[0]
             names.append(base)
-            #print(os.path.join(root, name))
-            #print(base)
 
     print('Reading images')
     print('====================================================================')
@@ -185,15 +148,11 @@ def read_data(directory, labels):
     for i in range(0, len(t_files)):
         image = mpimg.imread(t_files[i])
         np_image = np.array(image)[:DIM_ROWS, :DIM_COLS, :DIM_CHANNELS]
-        data[i] = np_image#.flatten() #image_to_feature_vector(image)
+        data[i] = np_image
         labels_l.append(labels[names[i]])
         #print(data[i]) 
 
     labels_l = to_categorical(labels_l)
-    #print('Writing pickle data')
-    #write_pickle_file(data, directory, 'data')
-    #print('Writing pickle labels')
-    #write_pickle_file(labels_l, directory, 'labels')
     return data, labels_l
 
 ''' 
@@ -254,7 +213,7 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     return network
 
-''' 
+'''
 ===============================================================================
 
 evaluate_network ::
@@ -269,27 +228,18 @@ def evaluate_network(test_labels, test_data, network):
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
-''' 
+'''
 ===============================================================================
 
-get_picklefiles ::
+save_model :: Saves a trained keras model in a pickle file
 
-@params:
+@params: network - Keras Model - trained keras model to serialize and save
+         model_type - int - representing model type
+                          - 0: CNN, 1: FFNN
 
-@returns: 
+@returns: void
 ===============================================================================
 '''
-def get_picklefiles():
-    pickles = []
-    for root, dirs, files in os.walk('.', topdown=False):
-        for name in files:
-            base = os.path.splitext(name)[0]
-            if 'pickle' in base:
-                pickles.append(name)
-                print(base)
-    return pickles
-
-
 def save_model(network, model_type):
     if (model_type == 0):
         pickle.dump(network, open('CNN_model.p', 'wb'))
@@ -299,8 +249,16 @@ def save_model(network, model_type):
         print("unrecongized model_type")
         print("0: CNN, 1: FFNN")
 
+'''
+===============================================================================
 
-# (EPOCHS, BATCH_SIZE, LEARNING_RATE, MOMENTUM, DECAY, NESTEROV, LOSS_FUNCTION )
+run_NN ::
+
+@params:
+
+@returns: 
+===============================================================================
+'''
 def run_NN(train_data, train_labels, test_data, test_labels):
     network        = initialize_network()
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
@@ -313,43 +271,8 @@ def run_NN(train_data, train_labels, test_data, test_labels):
     print("confidence interval:", interval)
 
 
-def preprocess_data(input_num, pickles, paths):
-    if input_num == 1:
-        if 'project_spect_data_pickle' not in pickles and 'project_spect_labels_pickle' not in pickles:
-            print('running read_data')
-            labels_dict        = gen_labels()
-            data, labels_list  = read_data(paths[0], labels_dict)
-        else:
-            print('reading pickle files')
-            data        = pickle.load(open('project_spect_data_pickle', 'rb'))
-            labels_list = pickle.load(open('project_spect_labels_pickle', 'rb'))
-
-    if input_num == 2:
-        if 'project_timeseries_data_pickle' not in pickles and 'project_timeseries_labels_pickle' not in pickles:
-            print('Running read_data')
-            labels_dict        = gen_labels()
-            data, labels_list  = read_data(paths[1], labels_dict)
-        else:
-            print('Reading pickle files')
-            data        = pickle.load(open('project_timeseries_data_pickle', 'rb'))
-            labels_list = pickle.load(open('project_timeseries_labels_pickle', 'rb'))
-
-    if input_num == 3:
-        DIM_ROWS = 234
-        if 'project_mfccs_data_pickle' not in pickles and 'project_mfccs_labels_pickle' not in pickles:
-            print('Running read_data')
-            labels_dict        = gen_labels()
-            data, labels_list  = read_data(paths[2], labels_dict)
-        else:
-            print('Reading pickle files')
-            data        = pickle.load(open('project_mfccs_data_pickle', 'rb'))
-            labels_list = pickle.load(open('project_mfccs_labels_pickle', 'rb'))
-
-    return data, labels_list
-
 if (__name__ == '__main__'):
     paths       = ['project_spect/train/', 'project_timeseries/train/', 'project_mfccs/train/']
-    pickles     = get_picklefiles()
     data        = []
     labels_list = []
 
@@ -360,5 +283,6 @@ if (__name__ == '__main__'):
         print('3: use MFCCs')
     else:
         input_num = int(sys.argv[1])
-        data, labels_list = preprocess_data(input_num, pickles, paths)
+        labels_dict        = gen_labels()
+        data, labels_list  = read_data(paths[input_num-1], labels_dict)
         run_NN(data[:NUM_TRAINING], labels_list[:NUM_TRAINING], data[NUM_TRAINING:], labels_list[NUM_TRAINING:])

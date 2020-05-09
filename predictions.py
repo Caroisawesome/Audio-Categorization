@@ -11,22 +11,6 @@ DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
-# NN Parameters
-
-EPOCHS = 30
-BATCH_SIZE = 150
-LEARNING_RATE = 0.001
-MOMENTUM = 0.9
-DECAY = 1e-6
-NESTEROV = True
-LOSS_FUNCTION = 'categorical_crossentropy'
-
-# Number of training data (remainder of data will go to testing)
-NUM_TRAINING = 1840
-LEAKY_RELU_ALPHA = 0.01
-
-USE_NEPTUNE = True
-
 '''
 ===============================================================================
 write_to_csv - Write predictions to a csv file
@@ -90,7 +74,7 @@ def make_predictions(classifier, in_path, out_path):
 
     if classifier == 0:
         # make predictions with CNN
-        model = True
+        model = pickle.load(open('CNN_model.p', 'rb'))
         predictions = []
         print("TODO: set up predictions with CNN")
     elif classifier == 1:
