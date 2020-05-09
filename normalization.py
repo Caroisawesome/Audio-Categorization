@@ -21,8 +21,9 @@ def compute_mean(path):
             path = os.path.join(root, name)
             samplerate, data = scipy.io.wavfile.read(path)
             if len(data.shape) > 1:
-                count+=len(data[:,0])
-                sums+= np.sum(data[:,0])
+                data = data[:,0]
+            count+=len(data)
+            sums+= np.sum(data)
 
     return sums / count
 
@@ -46,8 +47,10 @@ def compute_sd(path, avg):
             samplerate, data = scipy.io.wavfile.read(path)
 
             if len(data.shape) > 1:
-                count += len(data[:,0])
-                sums += np.sum(np.square(data[:,0] - avg))
+                data = data[:,0]
+            count += len(data)
+            sums += np.sum(np.square(data - avg))
+
 
     variance = sums/(count-1)
     return np.sqrt(variance)
@@ -72,8 +75,9 @@ def normalize_data(path, out_path, avg, std):
             samplerate, data = scipy.io.wavfile.read(path)
 
             if len(data.shape)>1:
-                data_norm = (data[:,0] - avg) / std
-                scipy.io.wavfile.write(out_path + name.split(".")[0]+".wav", samplerate, data_norm)
+                data = data[:,0]
+            data_norm = (data - avg) / std
+            scipy.io.wavfile.write(out_path + name.split(".")[0]+".wav", samplerate, data_norm)
 
 '''
 ===============================================================================
