@@ -298,8 +298,10 @@ def run_NN(train_data, train_labels, test_data, test_labels):
     t_network      = train_network(train_labels, train_data, test_labels, test_data, network)
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
     save_model(t_network)
+    interval = 1.96 * sqrt( (accuracy * (1 - accuracy)) / NUM_TRAINING)
     print("loss", loss)
     print("accuracy", accuracy)
+    print("confidence interval": interval)
 
 
 def preprocess_data(input_num, pickles, paths):
