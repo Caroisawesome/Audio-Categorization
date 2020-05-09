@@ -76,7 +76,7 @@ class StridedNet:
         # our first CONV layer will learn a total of 16 filters, each
 		# Of which are 7x7 -- we'll then apply 2x2 strides to reduce
 		# the spatial dimensions of the volume
-        model.add(Conv2D(16, (7, 7), strides=(1, 1), padding="same",
+        model.add(Conv2D(16, (3, 3), strides=(1, 1), padding="same",
         kernel_initializer=init, kernel_regularizer=reg,
         input_shape=inputShape))
         print('====================================================================')
@@ -84,11 +84,11 @@ class StridedNet:
         print('====================================================================')
 		# here we stack two CONV layers on top of each other where
 		# each layerswill learn a total of 32 (3x3) filters
-        model.add(Conv2D(32, (7, 7), padding="same",
+        model.add(Conv2D(32, (3, 3), padding="same",
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(32, (7, 7), strides=(1, 1), padding="same",	
+        model.add(Conv2D(32, (3, 3), strides=(1, 1), padding="same",	
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu")) 
         model.add(BatchNormalization(axis=chanDim)) 
@@ -98,11 +98,11 @@ class StridedNet:
         print('====================================================================')
         # stack two more CONV layers, keeping the size of each filter
         # as 3x3 but increasing to 64 total learned filters
-        model.add(Conv2D(64, (5, 5), padding="same",
+        model.add(Conv2D(64, (3, 3), padding="same",
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(64, (5, 5), strides=(1, 1), padding="same",
+        model.add(Conv2D(64, (3, 3), strides=(1, 1), padding="same",
 			kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
