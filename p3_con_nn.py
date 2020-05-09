@@ -10,13 +10,13 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-from keras.optimizers import SGD
+#from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
-#from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.regularizers import l2
-from keras.callbacks import Callback
+#from keras.callbacks import Callback
 # import the necessary packages
 #from scikitplot.metrics import plot_confusion_matrix
 from keras.models import Sequential
@@ -209,7 +209,7 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     #sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     #network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
     opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
-    model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=["accuracy"])
+    model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
     network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
@@ -299,23 +299,23 @@ if __name__ == '__main__':
     
     
     
-    '''
     # train the network
     print("[INFO] training network for {} epochs...".format(EPOCHS))
-    H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BATCH_SIZE),
-    	validation_data=(testX, testY), steps_per_epoch=(len(trainX) / BATCH_SIZE),
+    t_network = model.fit_generator(aug.flow(train_data, train_labels, batch_size=BATCH_SIZE),
+    	validation_data=(test_data, test_labels), steps_per_epoch=len(train_data),
     	epochs=EPOCHS)
     
     
     # evaluate the network
     print("[INFO] evaluating network...")
-    predictions = model.predict(testX, batch_size=BATCH_SIZE)
-    print(classification_report(testY.argmax(axis=1),
+    predictions = model.predict(test_data, batch_size=BATCH_SIZE)
+    print(classification_report(test_labels.argmax(axis=1),
     predictions.argmax(axis=1), target_names=labels_l))
     '''
     
     t_network      = train_network(train_labels, train_data, test_labels, test_data, model)
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
+    '''
     save_model(t_network, 0)
     
     # plot the training loss and accuracy
