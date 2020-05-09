@@ -87,7 +87,7 @@ class StridedNet:
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(32, (7, 7), strides=(1, 1), padding="valid",	
+        model.add(Conv2D(32, (7, 7), strides=(1, 1), padding="same",	
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu")) 
         model.add(BatchNormalization(axis=chanDim)) 
@@ -101,7 +101,7 @@ class StridedNet:
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(64, (5, 5), strides=(1, 1), padding="valid",
+        model.add(Conv2D(64, (5, 5), strides=(1, 1), padding="same",
 			kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
@@ -114,7 +114,7 @@ class StridedNet:
 			kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(128, (3, 3), strides=(1, 1), padding="valid",
+        model.add(Conv2D(128, (3, 3), strides=(1, 1), padding="same",
 			kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
