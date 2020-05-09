@@ -34,10 +34,7 @@ import numpy as np
 import pickle
 import os
 import csv
-import neptune
 
-
-USE_NEPTUNE = False
 DIM_ROWS = 234 # max 277
 DIM_COLS = 200 # max 372
 DIM_CHANNELS = 3 # max 3
@@ -55,36 +52,7 @@ NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
 
-if (USE_NEPTUNE):
-    neptune.init('carolyna/Audio-Categorization')
-    neptune.create_experiment(name='test-experiment')
 
-class NeptuneLoggerCallback(Callback):
-    def __init__(self, model, validation_data):
-        super().__init__()
-        self.model = model
-        self.validation_data = validation_data
-
-    def on_batch_end(self, batch, logs={}):
-        for log_name, log_value in logs.items():
-            neptune.log_metric(f'batch_{log_name}', log_value)
-
-    def on_epoch_end(self, epoch, logs={}):
-        for log_name, log_value in logs.items():
-            neptune.log_metric(f'epoch_{log_name}', log_value)
-
-        #y_pred = np.asarray(self.model.predict(self.validation_data[0]))
-        #y_true = self.validation_data[1]
-
-        #y_pred_class = np.argmax(y_pred, axis=1)
-        #y_true_class = np.argmax(y_true, axis=1)
-
-        fig, ax = plt.subplots(figsize=(16, 12))
-
-        #plot_confusion_matrix(y_true_class, y_pred_class, ax=ax)
-        neptune.log_image('confusion_matrix', fig)
-        plt.close()
-        
         
         
 class StridedNet:
@@ -239,13 +207,7 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
-    if USE_NEPTUNE:
-        neptune_logger=NeptuneLoggerCallback(model=network,
-                                         validation_data=(test_data, test_labels))
-        network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
-                batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
-    else:
-        network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
+    network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
     return network
