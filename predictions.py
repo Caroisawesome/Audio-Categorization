@@ -27,13 +27,31 @@ LEAKY_RELU_ALPHA = 0.01
 
 USE_NEPTUNE = True
 
+'''
+===============================================================================
+write_to_csv - Write predictions to a csv file
+@params: names - [string] - list of the song ids
+         predictions - [int] - list of the genre predictions
+         out_path - string - path/name of csv file that will hold predictions
+
+@returns: void
+===============================================================================
+'''
 def write_to_csv(names, predictions,out_path):
-    #with open(out_path, 'w', newline='') as file:
     with open(out_path, 'w') as file:
         writer = csv.writer(file)
         for i in range(0, len(names)):
             writer.writerow([names[i], predictions[i]])
 
+'''
+===============================================================================
+get_test_data - process testing data
+@params: in_path - string - path to testing data
+
+@returns: names - [string] - list of song ids that were in directory
+          data - ndarray - image data formatted to put into NN
+===============================================================================
+'''
 def get_test_data(in_path):
     t_files = []
     names = []
@@ -54,6 +72,16 @@ def get_test_data(in_path):
 
     return data, names
 
+'''
+===============================================================================
+make_predictions - make genre predictions based on the test data
+@params: classifier - {0|1} - indicates whether to use CNN or FFNN
+         in_path - path to test data
+         out_path - path/name of csv file to write predictions to
+
+@returns: void
+===============================================================================
+'''
 def make_predictions(classifier, in_path, out_path):
 
     test_data, names = get_test_data(in_path)
@@ -98,7 +126,6 @@ if __name__ == '__main__':
     else:
         classifier = int(sys.argv[1])
         feature = int(sys.argv[2])
-
         in_path = paths[feature]
         out_path = predictions_path + 'feature_'+str(feature)+'.csv'
         make_predictions(classifier, in_path, out_path)
