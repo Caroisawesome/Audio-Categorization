@@ -134,6 +134,7 @@ class StridedNet:
         model.add(Activation("softmax"))
 
         # return the constructed network architecture
+        model.summary()
         return model
 
      
