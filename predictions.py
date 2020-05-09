@@ -76,7 +76,7 @@ def make_predictions(classifier, in_path, out_path):
 if __name__ == '__main__':
     # make predictions about data
 
-    predictions_path = 'predictions'
+    predictions_path = 'predictions/'
 
     paths = [
         'project_spect/test/',
