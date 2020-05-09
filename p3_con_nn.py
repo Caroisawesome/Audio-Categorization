@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-from audio_categorization.feed_forward import FF_NN
+
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -219,8 +219,8 @@ if __name__ == '__main__':
         
 
 
-    labels = FF_NN.gen_labels()
-    data,labels_l = FF_NN.read_data(imagePaths,labels)
+    labels = gen_labels()
+    data,labels_l = read_data(imagePaths,labels)
     
     
     # partition the data into training and testing splits using 75% of
@@ -257,7 +257,7 @@ if __name__ == '__main__':
     print(classification_report(testY.argmax(axis=1),
     predictions.argmax(axis=1), target_names=labels_l))
     
-    FF_NN.save_model(H, 0)
+    save_model(H, 0)
     
     # plot the training loss and accuracy
     N = EPOCHS
