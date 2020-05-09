@@ -207,6 +207,8 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     #sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
     #network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
+    opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
+    model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=["accuracy"])
     network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
@@ -289,13 +291,12 @@ if __name__ == '__main__':
 
     # initialize the optimizer and model
     print("[INFO] compiling model...")
-    opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
+    
     model = StridedNet.build(width=DIM_COLS, height=DIM_ROWS, depth=DIM_CHANNELS,
     	classes=len(labels_l), reg=l2(0.0005))
     
     
-    model.compile(loss=LOSS_FUNCTION, optimizer=opt,
-    	metrics=["accuracy"])
+    
     
     '''
     # train the network
