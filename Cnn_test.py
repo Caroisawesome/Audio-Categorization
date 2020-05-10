@@ -40,6 +40,7 @@ import csv
 import feed_forward
 import neptune
 import math
+import sys
 
 DIM_ROWS = 50 # max 277
 DIM_COLS = 50 # max 372
@@ -129,6 +130,15 @@ if __name__ == '__main__':
     dir_tmsr = "project_timeseries/train"
     dir_tmsr_1 = "project_time_series/train"
 
-    labels = feed_forward.gen_labels()
-    data,labels_list = feed_forward.read_data(dir_tmsr,labels)
-    run_CNN(data[:NUM_TRAINING], labels_list[:NUM_TRAINING], data[NUM_TRAINING:], labels_list[NUM_TRAINING:])
+    paths = [ dir_spec, dir_tmsr, dir_mfcc, dir_tmsr_1]
+
+    if len(sys.argv) < 2:
+        print('Argument required:')
+        print('1: use spectograms')
+        print('2: use timeseries')
+        print('3: use MFCCs')
+    else:
+        input_num = int(sys.argv[1])
+        labels = feed_forward.gen_labels()
+        data,labels_list = feed_forward.read_data(paths[input_num-1],labels)
+        run_CNN(data[:NUM_TRAINING], labels_list[:NUM_TRAINING], data[NUM_TRAINING:], labels_list[NUM_TRAINING:])
