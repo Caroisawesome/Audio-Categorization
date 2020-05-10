@@ -69,7 +69,14 @@ gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
 #gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.compat.v1.InteractiveSession(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))
 
+'''
+===============================================================================
+initialize_network -  Create model for CNN network
+@params: input_shape - (x,y,z) dimensions of input
 
+@returns: model - CNN network model
+===============================================================================
+'''
 def initialize_network(input_shape):
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(5, 5), strides=(1, 1),
@@ -82,7 +89,14 @@ def initialize_network(input_shape):
     model.add(Dense(100, activation='relu'))
     model.add(Dense(6, activation='softmax'))
     return model
+'''
+===============================================================================
+train_network - Train CNN network
+@params: train_labels, train_data, test_labels, test_data, network
 
+@returns: network - returns trained CNN network
+===============================================================================
+'''
 def train_network(train_labels, train_data, test_labels, test_data, network):
     print('Training con NN network')
     print('====================================================================')
@@ -101,11 +115,27 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     return network
 
+'''
+===============================================================================
+evaluate_network - Evaluate CNN network for correctness
+@params: test_labels, test_data, network
+
+@returns: loss, accuracy
+===============================================================================
+'''
 def evaluate_network(test_labels, test_data, network):
     (loss, accuracy) = network.evaluate(test_data, test_labels, batch_size=BATCH_SIZE, verbose=1)
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
+'''
+===============================================================================
+run_CNN - Initialize, train, and evaluate CNN
+@params: train_labels, train_data, test_labels, test_data
+
+@returns: void
+===============================================================================
+'''
 def run_CNN(train_data, train_labels, test_data, test_labels):
     input_shape    = (train_data.shape[1], train_data.shape[2], train_data.shape[3])
     network        = initialize_network(input_shape)
