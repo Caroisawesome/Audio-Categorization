@@ -58,3 +58,5 @@ Run `python3 feed-forward.py {1: Spectrogram, 2: Timeseries, 3: MFCC}`.
 First run either the CNN or FFNN on the desired feature set to train and save the network. Then, 
 
 Run `python3 predictions.py {0: CNN, 1: FFNN}`.
+
+This will output a csv file with the ids of the songs matched to a predicted genre.
