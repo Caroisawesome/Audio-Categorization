@@ -20,13 +20,13 @@ from keras.regularizers import l2
 # import the necessary packages
 #from scikitplot.metrics import plot_confusion_matrix
 from keras.models import Sequential
-#from keras.layers.normalization import BatchNormalization
+from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Conv2D
 from keras.layers.core import Activation
-#from keras.layers.core import Flatten
-#from keras.layers.core import Dropout
+from keras.layers.core import Flatten
+from keras.layers.core import Dropout
 from keras.layers.core import Dense
-#from keras import backend as K
+from keras import backend as K
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
@@ -63,24 +63,24 @@ class StridedNet:
         # "channels last" and the channels dimension itself
         model = Sequential()
         inputShape = (height, width, depth)
-        #chanDim = -1
+        chanDim = -1
         print('====================================================================')
         print('Starting CNN')
         print('====================================================================')
 		# if we are using "channels first", update the input shape
 		# and channels dimension
-        '''
+       
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
-            # chanDim = 1
-           ''' 
+            chanDim = 1
+           
         # our first CONV layer will learn a total of 16 filters, each
 		# Of which are 7x7 -- we'll then apply 2x2 strides to reduce
 		# the spatial dimensions of the volume
         model.add(Conv2D(16, (3, 3), strides=(1, 1), padding="same",
         kernel_initializer=init, kernel_regularizer=reg,
         input_shape=inputShape))
-        '''
+        
         print('====================================================================')
         print('Starting CNN_32')
         print('====================================================================')
@@ -95,6 +95,8 @@ class StridedNet:
         model.add(Activation("relu")) 
         model.add(BatchNormalization(axis=chanDim)) 
         model.add(Dropout(0.25))
+        model.add(Flatten())
+        '''
         print('====================================================================')
         print('Starting CNN_64')
         print('====================================================================')
