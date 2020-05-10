@@ -77,7 +77,7 @@ class StridedNet:
         # our first CONV layer will learn a total of 16 filters, each
 		# Of which are 7x7 -- we'll then apply 2x2 strides to reduce
 		# the spatial dimensions of the volume
-        model.add(Conv2D(4, (7, 7), strides=(1, 1), padding="same",
+        model.add(Conv2D(4, (2, 2), strides=(1, 1), padding="same",
         kernel_initializer=init, kernel_regularizer=reg,
         input_shape=inputShape))
         
@@ -86,11 +86,11 @@ class StridedNet:
         print('====================================================================')
 		# here we stack two CONV layers on top of each other where
 		# each layerswill learn a total of 32 (3x3) filters
-        model.add(Conv2D(8, (7, 7), padding="same",
+        model.add(Conv2D(8, (2, 2), padding="same",
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu"))
         model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(8, (7, 7), strides=(1, 1), padding="same",	
+        model.add(Conv2D(8, (2, 2), strides=(1, 1), padding="same",	
             kernel_initializer=init, kernel_regularizer=reg))
         model.add(Activation("relu")) 
         model.add(BatchNormalization(axis=chanDim)) 
