@@ -72,16 +72,17 @@ gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
 #gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.compat.v1.InteractiveSession(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))
 
+<<<<<<< HEAD
 
 
 ''' 
 ===============================================================================
 
-initialize_network
+initialize_network -  Create model for CNN network
 
-@params: input_shape :: tuple of (rows, cols, channels)
+@params: input_shape - (x,y,z) dimensions of input
 
-@returns: model :: Newly intialized CNN
+@returns: model - CNN network model
 ===============================================================================
 '''
 def initialize_network(input_shape):
@@ -110,7 +111,7 @@ train_network :: takes the newly initialized network, labels, data, and trains
          test_data,
          network
 
-@returns: network :: trained network
+@returns: network - returns trained CNN network
 ===============================================================================
 '''
 def train_network(train_labels, train_data, test_labels, test_data, network):
