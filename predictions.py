@@ -73,16 +73,13 @@ def make_predictions(classifier, in_path, out_path):
     print("names", names)
 
     if classifier == 0:
-        # make predictions with CNN
         model = pickle.load(open('CNN_model.p', 'rb'))
-        predictions = []
-        print("TODO: set up predictions with CNN")
     elif classifier == 1:
         model = pickle.load(open('feed_forward_model.p', 'rb'))
-        predictions = model.predict_classes(test_data)
     else:
         print("Incorrect classifier. Try again.")
 
+    predictions = model.predict_classes(test_data)
     write_to_csv(names, predictions, out_path)
 
 if __name__ == '__main__':
