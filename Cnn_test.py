@@ -38,13 +38,14 @@ import pickle
 import os
 import csv
 import feed_forward
+import neptune
 
-DIM_ROWS = 50 # max 277
+DIM_ROWS = 100 # max 277
 DIM_COLS = 50 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
-EPOCHS = 30
+EPOCHS = 15
 BATCH_SIZE = 50
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
@@ -56,6 +57,11 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
+USE_NEPTUNE = True
+
+if (USE_NEPTUNE):
+    neptune.init('carolyna/Audio-Categorization')
+    neptune.create_experiment(name='test-experiment')
 
 gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
 #gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
@@ -82,7 +88,13 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
     #opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
     #model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
-    network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
+    if USE_NEPTUNE:
+        neptune_logger=feed_forward.NeptuneLoggerCallback(model=network,
+                                         validation_data=(test_data, test_labels))
+        network.fit(train_data, train_labels, validation_data=(test_data, test_labels), epochs=EPOCHS,
+                batch_size=BATCH_SIZE, verbose=1, callbacks=[neptune_logger])
+    else:
+        network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
     return network
