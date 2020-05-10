@@ -55,6 +55,28 @@ if (USE_NEPTUNE):
     neptune.init('carolyna/Audio-Categorization')
     neptune.create_experiment(name='test-experiment')
 
+#print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
+"""
+
+    Various functions and implementations borrowed or inspired from:
+
+    https://medium.com/@navdeepsingh_2336/identifying-the-genre-of-a-song-with-neural-networks-851db89c42f0
+    
+    and
+
+    https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/
+
+"""
+
+
+'''
+===============================================================================
+
+class Neptune Logger - tracks loss and accuracies throughout training process
+                       results are sent to our user account at Neptune.ai
+
+===============================================================================
+'''
 class NeptuneLoggerCallback(Callback):
     def __init__(self, model, validation_data):
         super().__init__()
@@ -82,26 +104,14 @@ class NeptuneLoggerCallback(Callback):
         plt.close()
 
 
-
-#print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
-"""
-
-    Various functions and implementations borrowed or inspired from:
-
-    https://medium.com/@navdeepsingh_2336/identifying-the-genre-of-a-song-with-neural-networks-851db89c42f0
-    
-    and
-
-    https://www.pyimagesearch.com/2016/09/26/a-simple-neural-network-with-python-and-keras/
-
-"""
-
-''' 
+'''
 ===============================================================================
 
-@params:
+get_labels - generates a list of labels from the train.csv file
 
-@returns: 
+@params: void
+
+@returns: labels - a list of labels
 ===============================================================================
 '''
 def gen_labels():
@@ -155,16 +165,14 @@ def read_data(directory, labels):
     labels_l = to_categorical(labels_l)
     return data, labels_l
 
-''' 
+'''
 ===============================================================================
 
-initialize_network :: 
+initialize_network :: Creates feed forward neural network
 
-* input_dim = 549072 = 496 X 369 X 3 RGB channels
+@params: void
 
-@params:
-
-@returns: 
+@returns: network
 ===============================================================================
 '''
 def initialize_network():
@@ -189,14 +197,14 @@ def initialize_network():
     print('====================================================================')
     return network
 
-''' 
+'''
 ===============================================================================
 
 train_network :: Using stochastic gradient descent.
 
-@params:
+@params: train_labels, train_data, test_labels, test_data, network
 
-@returns: 
+@returns: network - feed forward neural network model
 ===============================================================================
 '''
 def train_network(train_labels, train_data, test_labels, test_data, network):
@@ -218,11 +226,13 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
 '''
 ===============================================================================
 
-evaluate_network ::
+evaluate_network :: Evaluates network to check for accuracy
 
-@params:
+@params: test_labels - tensor of one-hot encoded labels for testing accuracy
+         test_data - tensor of test data to classify
+         network - trained feed forward model
 
-@returns: 
+@returns: loss, accuracy
 ===============================================================================
 '''
 def evaluate_network(test_labels, test_data, network):
@@ -254,11 +264,14 @@ def save_model(network, model_type):
 '''
 ===============================================================================
 
-run_NN ::
+run_NN :: Initializes, trains, and evaluates the feed forward network
 
-@params:
+@params: train_data - tensor of data to use for training
+         train_labels - tensor of one-hot encoded lables for training
+         test_data - tensor of data for testing
+         test_labels - tensor of labels to check accuracy of test data
 
-@returns: 
+@returns: void
 ===============================================================================
 '''
 def run_NN(train_data, train_labels, test_data, test_labels):
