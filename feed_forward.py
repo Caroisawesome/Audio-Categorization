@@ -49,7 +49,7 @@ LOSS_FUNCTION = 'categorical_crossentropy'
 NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
-USE_NEPTUNE = True
+USE_NEPTUNE = False
 
 if (USE_NEPTUNE):
     neptune.init('carolyna/Audio-Categorization')
