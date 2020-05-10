@@ -10,11 +10,11 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-#from keras.optimizers import SGD
+from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+#from sklearn.metrics import classification_report
 from keras.preprocessing.image import ImageDataGenerator
-from keras.optimizers import Adam
+#from keras.optimizers import Adam
 from keras.regularizers import l2
 #from keras.callbacks import Callback
 # import the necessary packages
@@ -211,10 +211,10 @@ train_network :: Using stochastic gradient descent.
 def train_network(train_labels, train_data, test_labels, test_data, network):
     print('Training con NN network')
     print('====================================================================')
-    #sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
-    #network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
-    opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
-    model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
+    sgd = SGD(lr=LEARNING_RATE, decay=DECAY, momentum=MOMENTUM, nesterov=NESTEROV)
+    network.compile(loss=LOSS_FUNCTION, optimizer=sgd, metrics=['categorical_accuracy'])
+    #opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
+    #model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
     network.fit(train_data, train_labels, epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=1)
     print('Con NN trained')
     print('====================================================================')
@@ -301,7 +301,7 @@ if __name__ == '__main__':
     model = StridedNet.build(width=DIM_COLS, height=DIM_ROWS, depth=DIM_CHANNELS,
     	classes=len(labels_l), reg=l2(0.0005))
     
-    
+    '''
     opt = Adam(lr=LEAKY_RELU_ALPHA, decay=DECAY / EPOCHS)
     model.compile(loss=LOSS_FUNCTION, optimizer=opt,metrics=['categorical_accuracy'])
     
@@ -321,7 +321,7 @@ if __name__ == '__main__':
     
     t_network      = train_network(train_labels, train_data, test_labels, test_data, model)
     loss, accuracy = evaluate_network(test_labels, test_data, t_network)
-    '''
+    
     save_model(t_network, 0)
     
     # plot the training loss and accuracy
