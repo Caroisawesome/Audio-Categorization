@@ -10,7 +10,6 @@ matplotlib.use("Agg")
 
 # import the necessary packages
 
-#from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from keras.preprocessing.image import ImageDataGenerator
@@ -41,7 +40,6 @@ import feed_forward
 import neptune
 import math
 import sys
-
 DIM_ROWS = 50 # max 277
 DIM_COLS = 50 # max 372
 DIM_CHANNELS = 3 # max 3
