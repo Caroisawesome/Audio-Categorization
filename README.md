@@ -47,7 +47,7 @@ This command will read normalized wav files from `data/project_waves_norm/{train
 
 ## Convolutional Neural Network
 
-TODO:
+Run `python3 CNN.py {1: Spectrogram, 2: Timeseries, 3: MFCC}`.
 
 ## Feed Forward Neural Network
 
