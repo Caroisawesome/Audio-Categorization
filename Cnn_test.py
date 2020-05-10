@@ -39,13 +39,14 @@ import os
 import csv
 import feed_forward
 import neptune
+import math
 
-DIM_ROWS = 100 # max 277
+DIM_ROWS = 50 # max 277
 DIM_COLS = 50 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
-EPOCHS = 15
+EPOCHS = 1
 BATCH_SIZE = 50
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9

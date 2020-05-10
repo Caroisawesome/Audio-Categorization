@@ -2,3 +2,10 @@ gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
 gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.compat.v1.InteractiveSession(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))
 
+1 Epoch: CNN Cnn_test
+
+loss=1.7237, accuracy: 25.8716%
+loss 1.7236613910132592
+accuracy 0.25871559977531433
+confidence interval: 0.0023211111946189154
+
