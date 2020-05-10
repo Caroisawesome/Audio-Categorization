@@ -28,6 +28,7 @@ from keras.layers.core import Dropout
 from keras.layers.core import Dense
 from keras import backend as K
 from keras.utils import to_categorical
+import tensorflow as tf
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg 
 import numpy as np
@@ -35,8 +36,10 @@ import pickle
 import os
 import csv
 
-DIM_ROWS = 234 # max 277
-DIM_COLS = 200 # max 372
+#DIM_ROWS = 234 # max 277
+DIM_ROWS = 50 # max 277
+#DIM_COLS = 200 # max 372
+DIM_COLS = 50 # max 372
 DIM_CHANNELS = 3 # max 3
 TOTAL_INPUT_SIZE = DIM_ROWS*DIM_COLS*DIM_CHANNELS
 
@@ -53,8 +56,9 @@ NUM_TRAINING = 1840
 LEAKY_RELU_ALPHA = 0.01
 
 
-
-        
+gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
+gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
+session     = tf.compat.v1.InteractiveSession(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))        
         
 class StridedNet:
     @staticmethod
