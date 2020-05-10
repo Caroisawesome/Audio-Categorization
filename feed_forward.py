@@ -132,11 +132,11 @@ def gen_labels():
 
 read_data :: Read image data and store as numpy array
 
-TODO :: finish code to read as image data and convert to numpy array.
+@params: directory, :: directory to read input files from.
+         labels     :: labels corresponding to both training and test data
 
-@params:
-
-@returns: 
+@returns: data,     :: array of flattened data arrays.
+          labels_l  :: list of labels in order of actual files.
 ===============================================================================
 '''
 def read_data(directory, labels):
@@ -228,9 +228,9 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
 
 evaluate_network :: Evaluates network to check for accuracy
 
-@params: test_labels - tensor of one-hot encoded labels for testing accuracy
-         test_data - tensor of test data to classify
-         network - trained feed forward model
+@params: test_labels :: tensor of one-hot encoded labels for testing accuracy
+         test_data   :: tensor of test data to classify
+         network     :: trained feed forward model
 
 @returns: loss, accuracy
 ===============================================================================
@@ -245,9 +245,10 @@ def evaluate_network(test_labels, test_data, network):
 
 save_model :: Saves a trained keras model in a pickle file
 
-@params: network - Keras Model - trained keras model to serialize and save
-         model_type - int - representing model type
-                          - 0: CNN, 1: FFNN
+@params: network - Keras Model :: trained keras model to serialize and save
+         model_type            :: int - representing model type
+                                  0: CNN, 
+                                  1: FFNN
 
 @returns: void
 ===============================================================================
@@ -266,10 +267,10 @@ def save_model(network, model_type):
 
 run_NN :: Initializes, trains, and evaluates the feed forward network
 
-@params: train_data - tensor of data to use for training
-         train_labels - tensor of one-hot encoded lables for training
-         test_data - tensor of data for testing
-         test_labels - tensor of labels to check accuracy of test data
+@params: train_data   :: tensor of data to use for training
+         train_labels :: tensor of one-hot encoded lables for training
+         test_data    :: tensor of data for testing
+         test_labels  :: tensor of labels to check accuracy of test data
 
 @returns: void
 ===============================================================================

@@ -63,13 +63,21 @@ if (USE_NEPTUNE):
     neptune.init('carolyna/Audio-Categorization')
     neptune.create_experiment(name='test-experiment')
 
+"""
+Options used to set the GPU memory to use and or to allow growth of memory.
+"""
 gpu_options = tf.compat.v1.GPUOptions(allow_growth=True)
 #gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=0.8)
 session = tf.compat.v1.InteractiveSession(config=tf.compat.v1.ConfigProto(gpu_options=gpu_options))
 
-'''
+<<<<<<< HEAD
+
+
+''' 
 ===============================================================================
+
 initialize_network -  Create model for CNN network
+
 @params: input_shape - (x,y,z) dimensions of input
 
 @returns: model - CNN network model
@@ -87,10 +95,19 @@ def initialize_network(input_shape):
     model.add(Dense(100, activation='relu'))
     model.add(Dense(6, activation='softmax'))
     return model
-'''
+
+''' 
 ===============================================================================
-train_network - Train CNN network
-@params: train_labels, train_data, test_labels, test_data, network
+
+train_network :: takes the newly initialized network, labels, data, and trains
+                 the it given the set values for learning rate, decay,
+                 momentum, epochs, etc, and trains it for that many epochs.
+
+@params: train_labels,
+         train_data, 
+         test_labels,
+         test_data,
+         network
 
 @returns: network - returns trained CNN network
 ===============================================================================
@@ -113,12 +130,18 @@ def train_network(train_labels, train_data, test_labels, test_data, network):
     print('====================================================================')
     return network
 
-'''
+''' 
 ===============================================================================
-evaluate_network - Evaluate CNN network for correctness
-@params: test_labels, test_data, network
 
-@returns: loss, accuracy
+evaluate_network :: Takes the test data and labels along with the network and
+                    produces the values for loss and accuracy.
+
+@params: test_labels,
+         test_data,
+         network
+
+@returns: loss,
+          accuracy 
 ===============================================================================
 '''
 def evaluate_network(test_labels, test_data, network):
@@ -126,12 +149,17 @@ def evaluate_network(test_labels, test_data, network):
     print("loss={:.4f}, accuracy: {:.4f}%".format(loss, accuracy * 100))
     return loss, accuracy
 
-'''
+''' 
 ===============================================================================
-run_CNN - Initialize, train, and evaluate CNN
-@params: train_labels, train_data, test_labels, test_data
 
-@returns: void
+run_CNN :: Takes both data and labels for training and testing and runs CNN.
+
+@params: train_data,
+         train_labels,
+         test_data,
+         test_labels
+
+@returns: VOID
 ===============================================================================
 '''
 def run_CNN(train_data, train_labels, test_data, test_labels):
