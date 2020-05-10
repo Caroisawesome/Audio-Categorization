@@ -27,6 +27,7 @@ from keras.layers.core import Activation
 from keras.layers.core import Flatten
 from keras.layers.core import Dropout
 from keras.layers.core import Dense
+from keras.optimizers import SGD
 from keras import backend as K
 from keras.utils import to_categorical
 import matplotlib.pyplot as plt
@@ -67,8 +68,8 @@ def initialize_network(input_shape):
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(1000, activation='relu'))
-    model.add(Dense(num_classes, activation='softmax'))
-    return network
+    model.add(Dense(6, activation='softmax'))
+    return model
 
 def train_network(train_labels, train_data, test_labels, test_data, network):
     print('Training con NN network')
