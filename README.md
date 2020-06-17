@@ -1,6 +1,6 @@
 # Audio Categorization
 
-This project uses Convolutional Neural Networks and Feed Forward Neural Networks to classify the genre of a song. The networks use 2401 classified songs for training. The songs are then converted into spectrograms, timeseries images, and MFCC images which then become inputs for the networks. 
+This project uses Convolutional Neural Networks and Feed Forward Neural Networks to classify the genre of a song. The networks use 2401 classified songs for training. The songs are then converted into spectrograms, timeseries images, and MFCC images which then become inputs for the networks. The document `Project 3 Report.pdf` contains additional results.
 
 ## Data Processing
 
